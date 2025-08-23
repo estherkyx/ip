@@ -15,19 +15,33 @@ public class Jett {
         String userInput = scanner.nextLine();
         while (!userInput.equals("bye")) {
             if (userInput.equals("list")) {
-                System.out.println(line);
+                System.out.println(line + "Here are the tasks in your list:");
                 int n = 0;
                 while (n < list.size()) {
-                    System.out.println((n + 1) + ". " + list.get(n).description);
+                    Task task = list.get(n);
+                    System.out.println((n + 1) + "." + task.toString());
                     n++;
                 }
                 System.out.println(line);
-                userInput = scanner.nextLine();
+            } else if (userInput.startsWith("mark")){
+                System.out.println(line + "Nice! I've marked this task as done:");
+                int taskNumber = Integer.parseInt(userInput.split(" ")[1]);
+                Task markedTask = list.get(taskNumber - 1);
+                markedTask.mark();
+                System.out.println("  " + markedTask.toString());
+                System.out.println(line);
+            } else if (userInput.startsWith("unmark")){
+                System.out.println(line + "OK, I've marked this task as not done yet:");
+                int taskNumber = Integer.parseInt(userInput.split(" ")[1]);
+                Task unmarkedTask = list.get(taskNumber - 1);
+                unmarkedTask.unmark();
+                System.out.println("  " + unmarkedTask.toString());
+                System.out.println(line);
             } else {
                 list.add(new Task(userInput));
                 System.out.println(line + "added: " + userInput + "\n" + line);
-                userInput = scanner.nextLine();
             }
+            userInput = scanner.nextLine();
         }
 
         // Exit
