@@ -4,7 +4,7 @@ import java.util.Scanner;
 public class Jett {
     public static void main(String[] args) {
         Scanner scanner = new Scanner(System.in);
-        ArrayList<String> list = new ArrayList<>();
+        ArrayList<Task> list = new ArrayList<>();
         String line = "____________________________________________________________\n";
 
         // Greeting
@@ -18,13 +18,13 @@ public class Jett {
                 System.out.println(line);
                 int n = 0;
                 while (n < list.size()) {
-                    System.out.println((n + 1) + ". " + list.get(n));
+                    System.out.println((n + 1) + ". " + list.get(n).description);
                     n++;
                 }
                 System.out.println(line);
                 userInput = scanner.nextLine();
             } else {
-                list.add(userInput);
+                list.add(new Task(userInput));
                 System.out.println(line + "added: " + userInput + "\n" + line);
                 userInput = scanner.nextLine();
             }
