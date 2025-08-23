@@ -38,8 +38,39 @@ public class Jett {
                 System.out.println("  " + unmarkedTask.toString());
                 System.out.println(line);
             } else {
-                list.add(new Task(userInput));
-                System.out.println(line + "added: " + userInput + "\n" + line);
+                System.out.println(line + "Got it. I've added this task:");
+                if (userInput.startsWith("todo")) {
+                    // remove "todo "
+                    String description = userInput.substring(5);
+                    Task newTask = new Todo(description);
+                    list.add(newTask);
+                    System.out.println(newTask);
+                } else if (userInput.startsWith("deadline")) {
+                    // remove "deadline " and parse according to "/by "
+                    String[] parsed = userInput.substring(9).split("/by");
+                    String description = parsed[0].trim();
+                    String by = parsed[1].trim();
+                    Task newTask = new Deadline(description, by);
+                    list.add(newTask);
+                    System.out.println(newTask);
+                } else if (userInput.startsWith("event")) {
+                    // remove "event " and parse according to "/from "
+                    String[] parsed = userInput.substring(6).split("/from ");
+                    String description = parsed[0].trim();
+                    // parse according to "/to "
+                    String[] parsedTime = parsed[1].trim().split("/to ");
+                    String from = parsedTime[0].trim();
+                    String to = parsedTime[1].trim();
+                    Task newTask = new Event(description, from, to);
+                    list.add(newTask);
+                    System.out.println(newTask);
+                }
+                if (list.size() == 1) {
+                    System.out.println("Now you have " + list.size() + " task in the list.");
+                } else {
+                    System.out.println("Now you have " + list.size() + " tasks in the list.");
+                }
+                System.out.println(line);
             }
             userInput = scanner.nextLine();
         }
