@@ -1,7 +1,10 @@
+import java.util.ArrayList;
 import java.util.Scanner;
 
 public class Jett {
     public static void main(String[] args) {
+        Scanner scanner = new Scanner(System.in);
+        ArrayList<String> list = new ArrayList<>();
         String line = "____________________________________________________________\n";
 
         // Greeting
@@ -9,11 +12,22 @@ public class Jett {
         System.out.println(greeting);
 
         // User Input
-        Scanner scanner = new Scanner(System.in);
         String userInput = scanner.nextLine();
         while (!userInput.equals("bye")) {
-            System.out.println(line + userInput + "\n" + line);
-            userInput = scanner.nextLine();
+            if (userInput.equals("list")) {
+                System.out.println(line);
+                int n = 0;
+                while (n < list.size()) {
+                    System.out.println((n + 1) + ". " + list.get(n));
+                    n++;
+                }
+                System.out.println(line);
+                userInput = scanner.nextLine();
+            } else {
+                list.add(userInput);
+                System.out.println(line + "added: " + userInput + "\n" + line);
+                userInput = scanner.nextLine();
+            }
         }
 
         // Exit
