@@ -59,7 +59,7 @@ public class Jett {
                 throw new JettException("Specify one task number to mark (e.g. mark 2)");
             }
             String number = parts[1];
-            if (!number.matches("\\d+")) {  // check if number is a positive int
+            if (!number.matches("\\d+") || number.matches("0+")) {  // check if number is an int > 0
                 throw new JettException("Key in a valid task number (e.g. mark 2)");
             } else {
                 int taskNumber = Integer.parseInt(number); // convert string to int
@@ -73,13 +73,13 @@ public class Jett {
             }
   
         // User input = "unmark"
-        } else if (userInput.startsWith("unmark")){
+        } else if (userInput.startsWith("unmark")) {
             String[] parts = userInput.split(" "); // parse according to space
             if (parts.length != 2) {
                 throw new JettException("Specify one task number to unmark (e.g. unmark 2)");
             }
             String number = parts[1];
-            if (!number.matches("\\d+")) {  // check if number is a positive int
+            if (!number.matches("\\d+") || number.matches("0+")) {  // check if number is an int > 0
                 throw new JettException("Key in a valid task number (e.g. unmark 2)");
             } else {
                 int taskNumber = Integer.parseInt(number); // convert string to int
@@ -90,6 +90,31 @@ public class Jett {
                 unmarkedTask.unmark();
                 System.out.println(LINE + "OK, I've marked this task as not done yet:");
                 System.out.println("  " + unmarkedTask + "\n" + LINE);
+            }
+
+        // User input = "delete"
+        } else if (userInput.startsWith("delete")) {
+            String[] parts = userInput.split(" "); // parse according to space
+            if (parts.length != 2) {
+                throw new JettException("Specify one task number to delete (e.g. delete 2)");
+            }
+            String number = parts[1];
+            if (!number.matches("\\d+") || number.matches("0+")) {  // check if number is an int > 0
+                throw new JettException("Key in a valid task number (e.g. delete 2)");
+            } else {
+                int taskNumber = Integer.parseInt(number); // convert string to int
+                if (taskNumber < 1 || taskNumber > list.size()) {
+                    throw new JettException("I can’t find task " + taskNumber + ". Use 'list' to see valid task numbers.");
+                }
+                Task removedTask = list.get(taskNumber - 1);
+                list.remove(taskNumber - 1);
+                System.out.println(LINE + "Noted. I've removed this task:\n" + "  " + removedTask);
+                if (list.size() == 1) {
+                    System.out.println("Now you have " + list.size() + " task in the list.");
+                } else {
+                    System.out.println("Now you have " + list.size() + " tasks in the list.");
+                }
+                System.out.println(LINE);
             }
    
         // User input = "todo" or "deadline" or "event"
@@ -106,7 +131,7 @@ public class Jett {
                 }
                 Task newTask = new Todo(description);
                 list.add(newTask);
-                System.out.println(LINE + "Got it. I've added this task:\n" + newTask);
+                System.out.println(LINE + "Got it. I've added this task:\n" + "  " + newTask);
             
             // User input = "deadline"
             } else if (userInput.startsWith("deadline")) {
@@ -127,7 +152,7 @@ public class Jett {
                 }
                 Task newTask = new Deadline(description, by);
                 list.add(newTask);
-                System.out.println(LINE + "Got it. I've added this task:\n" + newTask);
+                System.out.println(LINE + "Got it. I've added this task:\n" + "  " + newTask);
             
             // User input = "event"
             } else if (userInput.startsWith("event")) {
@@ -156,7 +181,7 @@ public class Jett {
                 }
                 Task newTask = new Event(description, from, to);
                 list.add(newTask);
-                System.out.println(LINE + "Got it. I've added this task:\n" + newTask);
+                System.out.println(LINE + "Got it. I've added this task:\n" + "  " + newTask);
             }
             
             // Print number of tasks in list
@@ -171,12 +196,13 @@ public class Jett {
         } else {
             throw new JettException("This is not a valid command. Use one of the following:\n" +
                 "1. list\n" +
-                "2. mark <task number>\n" +
-                "3. unmark <task number>\n" +
-                "4. todo <description>\n" +
-                "5. deadline <description> /by <time>\n" +
-                "6. event <description> /from <start time> /to <end time>\n" +
-                "7. bye");
+                "2. todo <description>\n" +
+                "3. deadline <description> /by <time>\n" +
+                "4. event <description> /from <start time> /to <end time>\n" +
+                "5. mark <task number>\n" +
+                "6. unmark <task number>\n" +
+                "7. delete <task number>\n" +
+                "8. bye");
         }
     }
 }
