@@ -64,7 +64,7 @@ public class Jett {
             } else {
                 int taskNumber = Integer.parseInt(number); // convert string to int
                 if (taskNumber < 1 || taskNumber > list.size()) {
-                    throw new JettException("I can’t find task " + taskNumber + ". Use 'list' to see valid task numbers.");
+                    throw new JettException("I can't find task " + taskNumber + ". Use 'list' to see valid task numbers.");
                 }
                 Task markedTask = list.get(taskNumber - 1);
                 markedTask.mark();
@@ -84,7 +84,7 @@ public class Jett {
             } else {
                 int taskNumber = Integer.parseInt(number); // convert string to int
                 if (taskNumber < 1 || taskNumber > list.size()) {
-                    throw new JettException("I can’t find task " + taskNumber + ". Use 'list' to see valid task numbers.");
+                    throw new JettException("I can't find task " + taskNumber + ". Use 'list' to see valid task numbers.");
                 }
                 Task unmarkedTask = list.get(taskNumber - 1);
                 unmarkedTask.unmark();
@@ -104,7 +104,7 @@ public class Jett {
             } else {
                 int taskNumber = Integer.parseInt(number); // convert string to int
                 if (taskNumber < 1 || taskNumber > list.size()) {
-                    throw new JettException("I can’t find task " + taskNumber + ". Use 'list' to see valid task numbers.");
+                    throw new JettException("I can't find task " + taskNumber + ". Use 'list' to see valid task numbers.");
                 }
                 Task removedTask = list.get(taskNumber - 1);
                 list.remove(taskNumber - 1);
