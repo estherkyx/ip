@@ -53,69 +53,31 @@ public class Jett {
             }
 
         // User input = "mark"
-        } else if (userInput.startsWith("mark")){
-            String[] parts = userInput.split(" "); // parse according to space
-            if (parts.length != 2) {
-                throw new JettException("Specify one task number to mark (e.g. mark 2)");
-            }
-            String number = parts[1];
-            if (!number.matches("\\d+") || number.matches("0+")) {  // check if number is an int > 0
-                throw new JettException("Key in a valid task number (e.g. mark 2)");
-            } else {
-                int taskNumber = Integer.parseInt(number); // convert string to int
-                if (taskNumber < 1 || taskNumber > list.size()) {
-                    throw new JettException("I can't find task " + taskNumber + ". Use 'list' to see valid task numbers.");
-                }
-                Task markedTask = list.get(taskNumber - 1);
-                markedTask.mark();
-                System.out.println(LINE + "Nice! I've marked this task as done:");
-                System.out.println("  " + markedTask + "\n" + LINE);
-            }
+        } else if (userInput.startsWith("mark")) {
+            Task markedTask = list.get(getTaskNumber(userInput, "mark", list) - 1);
+            markedTask.mark();
+            System.out.println(LINE + "Nice! I've marked this task as done:");
+            System.out.println("  " + markedTask + "\n" + LINE);
   
         // User input = "unmark"
         } else if (userInput.startsWith("unmark")) {
-            String[] parts = userInput.split(" "); // parse according to space
-            if (parts.length != 2) {
-                throw new JettException("Specify one task number to unmark (e.g. unmark 2)");
-            }
-            String number = parts[1];
-            if (!number.matches("\\d+") || number.matches("0+")) {  // check if number is an int > 0
-                throw new JettException("Key in a valid task number (e.g. unmark 2)");
-            } else {
-                int taskNumber = Integer.parseInt(number); // convert string to int
-                if (taskNumber < 1 || taskNumber > list.size()) {
-                    throw new JettException("I can't find task " + taskNumber + ". Use 'list' to see valid task numbers.");
-                }
-                Task unmarkedTask = list.get(taskNumber - 1);
-                unmarkedTask.unmark();
-                System.out.println(LINE + "OK, I've marked this task as not done yet:");
-                System.out.println("  " + unmarkedTask + "\n" + LINE);
-            }
+            Task unmarkedTask = list.get(getTaskNumber(userInput, "unmark", list) - 1);
+            unmarkedTask.unmark();
+            System.out.println(LINE + "OK, I've marked this task as not done yet:");
+            System.out.println("  " + unmarkedTask + "\n" + LINE);
 
         // User input = "delete"
         } else if (userInput.startsWith("delete")) {
-            String[] parts = userInput.split(" "); // parse according to space
-            if (parts.length != 2) {
-                throw new JettException("Specify one task number to delete (e.g. delete 2)");
-            }
-            String number = parts[1];
-            if (!number.matches("\\d+") || number.matches("0+")) {  // check if number is an int > 0
-                throw new JettException("Key in a valid task number (e.g. delete 2)");
+            int taskNumber = getTaskNumber(userInput, "delete", list);
+            Task removedTask = list.get(taskNumber - 1);
+            list.remove(taskNumber - 1);
+            System.out.println(LINE + "Noted. I've removed this task:\n" + "  " + removedTask);
+            if (list.size() == 1) {
+                System.out.println("Now you have " + list.size() + " task in the list.");
             } else {
-                int taskNumber = Integer.parseInt(number); // convert string to int
-                if (taskNumber < 1 || taskNumber > list.size()) {
-                    throw new JettException("I can't find task " + taskNumber + ". Use 'list' to see valid task numbers.");
-                }
-                Task removedTask = list.get(taskNumber - 1);
-                list.remove(taskNumber - 1);
-                System.out.println(LINE + "Noted. I've removed this task:\n" + "  " + removedTask);
-                if (list.size() == 1) {
-                    System.out.println("Now you have " + list.size() + " task in the list.");
-                } else {
-                    System.out.println("Now you have " + list.size() + " tasks in the list.");
-                }
-                System.out.println(LINE);
+                System.out.println("Now you have " + list.size() + " tasks in the list.");
             }
+            System.out.println(LINE);
    
         // User input = "todo" or "deadline" or "event"
         } else if (userInput.startsWith("todo") || userInput.startsWith("deadline") || userInput.startsWith("event")) {
@@ -203,6 +165,23 @@ public class Jett {
                 "6. unmark <task number>\n" +
                 "7. delete <task number>\n" +
                 "8. bye");
+        }
+    }
+
+    private static int getTaskNumber(String userInput, String action, ArrayList<Task> list) throws JettException {
+        String[] parts = userInput.split(" "); // parse according to space
+        if (parts.length != 2) {
+            throw new JettException("Specify a task number (e.g. " + action + " 2)");
+        }
+        String number = parts[1];
+        if (!number.matches("\\d+") || number.matches("0+")) {  // check if number is an int > 0
+            throw new JettException("Key in a valid task number (e.g. " + action + " 2)");
+        } else {
+            int taskNumber = Integer.parseInt(number); // convert string to int
+            if (taskNumber < 1 || taskNumber > list.size()) {
+                throw new JettException("I can't find task " + taskNumber + ". Use 'list' to see valid task numbers.");
+            }
+            return taskNumber;
         }
     }
 }
