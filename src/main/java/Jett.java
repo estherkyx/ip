@@ -97,13 +97,16 @@ public class Jett {
             
             // User input = "todo"
             if (userInput.startsWith("todo")) {
+                if (userInput.length() < 5) {
+                    throw new JettException("Fill in the description of your todo (e.g. todo read book)");
+                }
                 String description = userInput.substring(5); // remove "todo "
                 if (description.isEmpty()) {
                     throw new JettException("Fill in the description of your todo (e.g. todo read book)");
                 }
                 Task newTask = new Todo(description);
                 list.add(newTask);
-                System.out.println(LINE + "Got it. I've added this task: \n" + newTask);
+                System.out.println(LINE + "Got it. I've added this task:\n" + newTask);
             
             // User input = "deadline"
             } else if (userInput.startsWith("deadline")) {
@@ -124,7 +127,7 @@ public class Jett {
                 }
                 Task newTask = new Deadline(description, by);
                 list.add(newTask);
-                System.out.println(LINE + "Got it. I've added this task: \n" + newTask);
+                System.out.println(LINE + "Got it. I've added this task:\n" + newTask);
             
             // User input = "event"
             } else if (userInput.startsWith("event")) {
@@ -153,7 +156,7 @@ public class Jett {
                 }
                 Task newTask = new Event(description, from, to);
                 list.add(newTask);
-                System.out.println(LINE + "Got it. I've added this task: \n" + newTask);
+                System.out.println(LINE + "Got it. I've added this task:\n" + newTask);
             }
             
             // Print number of tasks in list
@@ -166,7 +169,7 @@ public class Jett {
 
         // Invalid user input
         } else {
-            throw new JettException("This is not a valid command. Use one of the following: \n" +
+            throw new JettException("This is not a valid command. Use one of the following:\n" +
                 "1. list\n" +
                 "2. mark <task number>\n" +
                 "3. unmark <task number>\n" +
