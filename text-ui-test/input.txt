@@ -14,9 +14,11 @@ todo join sports club
 todo borrow book
 mark
 mark -1
+mark 0
 mark 10
 unmark
 unmark -1
+unmark 0
 unmark 10
 list
 mark 1
@@ -25,5 +27,12 @@ unmark 2
 mark 4
 deadline return book /by Sunday
 event project meeting /from Mon 2pm /to 4pm
+list
+todo start report
+delete
+delete -1
+delete 0
+delete 10
+delete 5
 list
 bye
