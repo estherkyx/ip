@@ -20,7 +20,7 @@ public class Jett {
             } catch (JettException e) {
                 System.out.println(LINE + e.getMessage() + "\n" + LINE);
             } catch (Exception e) {
-                System.out.println(LINE + "Try again.");
+                System.out.println(LINE + "Try again.\n" + LINE);
             }
             userInput = scanner.nextLine().trim();
         }
