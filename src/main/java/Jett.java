@@ -1,12 +1,17 @@
 import java.util.ArrayList;
+import java.io.File;
+import java.io.FileWriter;
+import java.io.FileNotFoundException;
+import java.io.IOException;
 import java.util.Scanner;
 
 public class Jett {
     private static final String LINE = "____________________________________________________________\n";
+    private static final String DATA_PATH = "data/Jett.txt";
 
     public static void main(String[] args) {
         Scanner scanner = new Scanner(System.in);
-        ArrayList<Task> list = new ArrayList<>();
+        ArrayList<Task> list = getData();
 
         // Greeting
         String greeting = LINE + "Hello! I'm Jett\n" + "What can I do for you?\n" + LINE;
@@ -22,6 +27,7 @@ public class Jett {
             } catch (Exception e) {
                 System.out.println(LINE + "Try again.\n" + LINE);
             }
+            saveNow(list);
             userInput = scanner.nextLine().trim();
         }
 
@@ -146,18 +152,18 @@ public class Jett {
                 if (parsedFrom.length < 2) {
                     throw new JettException("Missing '/from'. (e.g. event meeting /from Mon 2pm /to 4pm)");
                 }
-                String description = parsedFrom[0].trim();
+                String eventDesc = parsedFrom[0].trim();
                 String[] parsedTo = parsedFrom[1].trim().split("/to "); // parse according to "/to "
                 if (parsedTo.length < 2) {
                     throw new JettException("Missing '/to'. (e.g. event meeting /from Mon 2pm /to 4pm)");
                 }
                 String from = parsedTo[0].trim();
                 String to = parsedTo[1].trim();
-                if (description.isEmpty() || from.isEmpty() || to.isEmpty()) {
+                if (eventDesc.isEmpty() || from.isEmpty() || to.isEmpty()) {
                     throw new JettException(
                             "Fill in the description, start and end time (e.g. event meeting /from Mon 2pm /to 4pm)");
                 }
-                Task newTask = new Event(description, from, to);
+                Task newTask = new Event(eventDesc, from, to);
                 list.add(newTask);
                 System.out.println(LINE + "Got it. I've added this task:\n" + "  " + newTask);
                 System.out.println("Now you have " + list.size() +
@@ -194,5 +200,121 @@ public class Jett {
             }
             return taskNumber;
         }
+    }
+
+    // Write task list into file
+    private static void saveNow(ArrayList<Task> list) {
+        try {
+            File f = new File(DATA_PATH);
+            File parent = f.getParentFile();
+            if (parent != null && !parent.exists()) {
+                parent.mkdirs();
+            }
+
+            try (FileWriter fw = new FileWriter(DATA_PATH)) {
+                for (Task t : list) {
+                    fw.write(t.toString());
+                    fw.write(System.lineSeparator());
+                }
+            }
+        } catch (IOException e) {
+            System.out.println("Something went wrong: " + e.getMessage());
+        }
+    }
+
+    // Get task list from file
+    private static ArrayList<Task> getData() {
+        ArrayList<Task> list = new ArrayList<>();
+        File f = new File(DATA_PATH);
+        if (!f.exists()) {
+            return list;
+        }
+
+        Scanner s = null;
+        try {
+            s = new Scanner(f);
+            while (s.hasNext()) {
+                String line = s.nextLine().trim();
+                if (line.isEmpty()) {
+                    continue;
+                }
+                Task t = parseLine(line);
+                if (t != null) {
+                    list.add(t);
+                }
+            }
+        } catch (FileNotFoundException e) {
+            System.out.println("File not found");
+        } catch (Exception e) {
+            System.out.println("Could not load data");
+        } finally {
+            if (s != null) {
+                s.close();
+            }
+        }
+        return list;
+    }
+
+    private static Task parseLine(String line) {
+        // Corrupted data (not in expected format)
+        if (line.charAt(0) != '[' || line.length() < 6 ) {
+            return null;
+        }
+
+        char taskType = line.charAt(1); // T or D or E
+        boolean isMarked = line.contains("[X]");
+
+        // Locate the second close parenthesis
+        int firstClose = line.indexOf(']');
+        if (firstClose == -1) {
+            return null;
+        }
+        int secondClose = line.indexOf(']', firstClose + 1);
+        if (secondClose == -1) {
+            return null;
+        }
+
+        // Obtain the task description and timings (if any)
+        String rest = line.substring(secondClose + 1).trim();
+
+        Task t = null;
+        switch (taskType) {
+            case 'T': {
+                t = new Todo(rest);
+                break;
+            }
+            case 'D': {
+                int open = rest.lastIndexOf('(');
+                int close = rest.lastIndexOf(')');
+                if (open == -1 || close == -1 || open > close) {
+                    return null;
+                }
+                String deadlineDesc = rest.substring(0, open).trim();
+                String by = rest.substring(open + 4, close).trim(); // "(by: 6pm)" -> "6pm"
+                t = new Deadline(deadlineDesc, by);
+                break;
+            }
+            case 'E': {
+                int open = rest.lastIndexOf('(');
+                int close = rest.lastIndexOf(')');
+                if (open == -1 || close == -1 || open > close) {
+                    return null;
+                }
+                String eventDesc = rest.substring(0, open).trim();
+                String time = rest.substring(open + 6, close).trim(); // "from: 3pm to: 4pm" -> "3pm to: 4pm"
+                int toIndex = time.indexOf("to:");
+                String from = time.substring(0, toIndex).trim(); // "3pm to: 4pm" -> "3pm"
+                String to = time.substring(toIndex + 3).trim(); // "3pm to: 4pm" -> "4pm"
+                t = new Event(eventDesc, from, to);
+                break;
+            }
+            default:
+                return null;
+        }
+
+        if (isMarked) {
+            t.mark();
+        }
+        return t;
     }
 }
