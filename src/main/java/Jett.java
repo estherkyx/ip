@@ -204,10 +204,18 @@ public class Jett {
 
     // Write task list into file
     private static void saveNow(ArrayList<Task> list) {
-        try (FileWriter fw = new FileWriter(DATA_PATH)) {
-            for (Task t : list) {
-                fw.write(t.toString());
-                fw.write(System.lineSeparator());
+        try {
+            File f = new File(DATA_PATH);
+            File parent = f.getParentFile();
+            if (parent != null && !parent.exists()) {
+                parent.mkdirs();
+            }
+
+            try (FileWriter fw = new FileWriter(DATA_PATH)) {
+                for (Task t : list) {
+                    fw.write(t.toString());
+                    fw.write(System.lineSeparator());
+                }
             }
         } catch (IOException e) {
             System.out.println("Something went wrong: " + e.getMessage());
