@@ -52,14 +52,6 @@ public class TaskList {
         return alphabeticalOrder.compare(a, b);
     };
 
-    private static int rank(Task.TaskKind k) {
-        return switch (k) {
-            case TODO -> 0;
-            case DEADLINE -> 1;
-            case EVENT -> 2;
-        };
-    }
-
     private static final Comparator<Task> typeOrder =
             Comparator.<Task>comparingInt(t -> rank(t.kind()))
                     .thenComparing(alphabeticalOrder);
@@ -80,6 +72,14 @@ public class TaskList {
      */
     public TaskList(ArrayList<Task> list) {
         this.tasks = list;
+    }
+
+    private static int rank(Task.TaskKind k) {
+        return switch (k) {
+        case TODO -> 0;
+        case DEADLINE -> 1;
+        case EVENT -> 2;
+        };
     }
 
     /**
