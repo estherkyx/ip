@@ -12,10 +12,10 @@ public class Jett {
     public static void main(String[] args) {
         Scanner scanner = new Scanner(System.in);
         ArrayList<Task> list = getData();
+        Ui ui = new Ui();
 
         // Greeting
-        String greeting = LINE + "Hello! I'm Jett\n" + "What can I do for you?\n" + LINE;
-        System.out.println(greeting);
+        ui.showGreeting();
 
         // Looped User Input
         String userInput = scanner.nextLine().trim();
@@ -32,8 +32,7 @@ public class Jett {
         }
 
         // Exit
-        String exit = LINE + "Bye. Hope to see you again soon!\n" + LINE;
-        System.out.println(exit);
+        ui.showExit();
     }
 
     // Enums
