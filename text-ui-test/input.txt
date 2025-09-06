@@ -4,12 +4,12 @@ todo
 todo read book
 deadline
 deadline return book
-deadline return book /by June 6th
+deadline return book /by Jun 6 2025
 list
 event
 event project meeting
-event project meeting /from Aug 6th 2pm
-event project meeting /from Aug 6th 2pm /to 4pm
+event sleepover /from 2025-12-10
+event sleepover /from 2025-12-10 /to 2025-12-11
 todo join sports club
 todo borrow book
 mark
@@ -25,8 +25,8 @@ mark 1
 mark 2
 unmark 2
 mark 4
-deadline return book /by Sunday
-event project meeting /from Mon 2pm /to 4pm
+deadline return book /by 2025-10-10
+event hackathon /from Nov 22 2025 /to Nov 25 2025
 list
 todo start report
 delete
