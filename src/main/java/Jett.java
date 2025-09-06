@@ -1,8 +1,8 @@
-import java.util.ArrayList;
 import java.io.File;
 import java.io.FileWriter;
 import java.io.FileNotFoundException;
 import java.io.IOException;
+import java.util.ArrayList;
 import java.util.Scanner;
 
 public class Jett {
@@ -137,9 +137,13 @@ public class Jett {
                     throw new JettException(
                             "Fill in the description and time of your deadline (e.g. deadline complete report /by Friday 5pm)");
                 }
-                Task deadlineTask = new Deadline(deadlineDesc, by);
-                list.add(deadlineTask);
-                System.out.println(LINE + "Got it. I've added this task:\n" + "  " + deadlineTask);
+                try {
+                    Task deadlineTask = new Deadline(deadlineDesc, by);
+                    list.add(deadlineTask);
+                } catch (IllegalArgumentException e) {
+                    throw new JettException("Use valid date format, e.g. 2025-09-06, 6/9/2025, Sep 6 2025");
+                }
+                System.out.println(LINE + "Got it. I've added this task:\n" + "  " + list.get(list.size()-1));
                 System.out.println("Now you have " + list.size() +
                         (list.size() == 1 ? " task" : " tasks") + " in the list.\n" + LINE);
                 break;
@@ -163,9 +167,13 @@ public class Jett {
                     throw new JettException(
                             "Fill in the description, start and end time (e.g. event meeting /from Mon 2pm /to 4pm)");
                 }
-                Task newTask = new Event(eventDesc, from, to);
-                list.add(newTask);
-                System.out.println(LINE + "Got it. I've added this task:\n" + "  " + newTask);
+                try {
+                    Task newTask = new Event(eventDesc, from, to);
+                    list.add(newTask);
+                } catch (IllegalArgumentException e) {
+                    throw new JettException("Use valid date format, e.g. 2025-09-06, 6/9/2025, Sep 6 2025");
+                }
+                System.out.println(LINE + "Got it. I've added this task:\n" + "  " + list.get(list.size()-1));
                 System.out.println("Now you have " + list.size() +
                         (list.size() == 1 ? " task" : " tasks") + " in the list.\n" + LINE);
                 break;
@@ -291,7 +299,11 @@ public class Jett {
                 }
                 String deadlineDesc = rest.substring(0, open).trim();
                 String by = rest.substring(open + 4, close).trim(); // "(by: 6pm)" -> "6pm"
-                t = new Deadline(deadlineDesc, by);
+                try {
+                    t = new Deadline(deadlineDesc, by);
+                } catch (IllegalArgumentException e) {
+                    return null;
+                }
                 break;
             }
             case 'E': {
@@ -305,7 +317,11 @@ public class Jett {
                 int toIndex = time.indexOf("to:");
                 String from = time.substring(0, toIndex).trim(); // "3pm to: 4pm" -> "3pm"
                 String to = time.substring(toIndex + 3).trim(); // "3pm to: 4pm" -> "4pm"
-                t = new Event(eventDesc, from, to);
+                try {
+                    t = new Event(eventDesc, from, to);
+                } catch (IllegalArgumentException e) {
+                    return null;
+                }
                 break;
             }
             default:
