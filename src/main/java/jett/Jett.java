@@ -1,3 +1,5 @@
+package jett;
+
 import java.util.Scanner;
 
 public class Jett {
