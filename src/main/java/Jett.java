@@ -1,8 +1,8 @@
-import java.util.ArrayList;
 import java.io.File;
 import java.io.FileWriter;
 import java.io.FileNotFoundException;
 import java.io.IOException;
+import java.util.ArrayList;
 import java.util.Scanner;
 
 public class Jett {
@@ -137,9 +137,13 @@ public class Jett {
                     throw new JettException(
                             "Fill in the description and time of your deadline (e.g. deadline complete report /by Friday 5pm)");
                 }
-                Task deadlineTask = new Deadline(deadlineDesc, by);
-                list.add(deadlineTask);
-                System.out.println(LINE + "Got it. I've added this task:\n" + "  " + deadlineTask);
+                try {
+                    Task deadlineTask = new Deadline(deadlineDesc, by);
+                    list.add(deadlineTask);
+                } catch (IllegalArgumentException e) {
+                    throw new JettException("Use date format yyyy-MM-dd, e.g. 2025-09-06");
+                }
+                System.out.println(LINE + "Got it. I've added this task:\n" + "  " + list.get(list.size()-1));
                 System.out.println("Now you have " + list.size() +
                         (list.size() == 1 ? " task" : " tasks") + " in the list.\n" + LINE);
                 break;
@@ -291,7 +295,11 @@ public class Jett {
                 }
                 String deadlineDesc = rest.substring(0, open).trim();
                 String by = rest.substring(open + 4, close).trim(); // "(by: 6pm)" -> "6pm"
-                t = new Deadline(deadlineDesc, by);
+                try {
+                    t = new Deadline(deadlineDesc, by);
+                } catch (IllegalArgumentException e) {
+                    return null;
+                }
                 break;
             }
             case 'E': {
