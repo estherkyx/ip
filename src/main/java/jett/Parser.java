@@ -1,3 +1,5 @@
+package jett;
+
 public class Parser {
     private static final String LINE = "____________________________________________________________\n";
 
