@@ -1,5 +1,3 @@
-import java.util.ArrayList;
-
 public class Parser {
     private static final String LINE = "____________________________________________________________\n";
 
@@ -24,7 +22,7 @@ public class Parser {
     }
 
     // Function to respond to user input
-    public static void respondToUser(String userInput, ArrayList<Task> list) throws JettException {
+    public static void respondToUser(String userInput, TaskList list) throws JettException {
         // Blank user input
         if (userInput.isBlank()) {
             throw new JettException("What can I do for you?");
@@ -34,18 +32,7 @@ public class Parser {
 
         switch (cmd) {
             case LIST: // User input = "list"
-                if (list.isEmpty()) {
-                    System.out.println(LINE + "Your list is empty.\n" + LINE);
-                } else {
-                    System.out.println(LINE + "Here are the tasks in your list:");
-                    int n = 0;
-                    while (n < list.size()) {
-                        Task task = list.get(n);
-                        System.out.println((n + 1) + "." + task.toString());
-                        n++;
-                    }
-                    System.out.println(LINE);
-                }
+                System.out.println(list.listString());
                 break;
 
             case MARK: // User input = "mark"
@@ -92,17 +79,17 @@ public class Parser {
 
             case DEADLINE: // User input = "deadline"
                 if (userInput.length() < 9) {
-                    throw new JettException("Fill in the description of your deadline (e.g. deadline complete report /by Friday 5pm)");
+                    throw new JettException("Fill in the description of your deadline (e.g. deadline complete report /by Sep 6 2025)");
                 }
                 String[] parsed = userInput.substring(9).split("/by"); // remove "deadline " and parse according to "/by "
                 if (parsed.length < 2) {
-                    throw new JettException("Missing '/by'. (e.g. deadline complete report /by Friday 5pm)");
+                    throw new JettException("Missing '/by'. (e.g. deadline complete report /by Sep 6 2025)");
                 }
                 String deadlineDesc = parsed[0].trim();
                 String by = parsed[1].trim();
                 if (deadlineDesc.isEmpty() || by.isEmpty()) {
                     throw new JettException(
-                            "Fill in the description and time of your deadline (e.g. deadline complete report /by Friday 5pm)");
+                            "Fill in the description and time of your deadline (e.g. deadline complete report /by Sep 6 2025)");
                 }
                 try {
                     Task deadlineTask = new Deadline(deadlineDesc, by);
@@ -117,22 +104,22 @@ public class Parser {
 
             case EVENT: // User input = "event"
                 if (userInput.length() < 6) {
-                    throw new JettException("Fill in the description of your event (e.g. event meeting /from Mon 2pm /to 4pm)");
+                    throw new JettException("Fill in the description of your event (e.g. event camp /from Sep 6 2025 /to Sep 7 2025)");
                 }
                 String[] parsedFrom = userInput.substring(6).split("/from "); // remove "event " and parse according to "/from "
                 if (parsedFrom.length < 2) {
-                    throw new JettException("Missing '/from'. (e.g. event meeting /from Mon 2pm /to 4pm)");
+                    throw new JettException("Missing '/from'. (e.g. event camp /from Sep 6 2025 /to Sep 7 2025)");
                 }
                 String eventDesc = parsedFrom[0].trim();
                 String[] parsedTo = parsedFrom[1].trim().split("/to "); // parse according to "/to "
                 if (parsedTo.length < 2) {
-                    throw new JettException("Missing '/to'. (e.g. event meeting /from Mon 2pm /to 4pm)");
+                    throw new JettException("Missing '/to'. (e.g. event camp /from Sep 6 2025 /to Sep 7 2025)");
                 }
                 String from = parsedTo[0].trim();
                 String to = parsedTo[1].trim();
                 if (eventDesc.isEmpty() || from.isEmpty() || to.isEmpty()) {
                     throw new JettException(
-                            "Fill in the description, start and end time (e.g. event meeting /from Mon 2pm /to 4pm)");
+                            "Fill in the description, start and end date (e.g. event camp /from Sep 6 2025 /to Sep 7 2025)");
                 }
                 try {
                     Task newTask = new Event(eventDesc, from, to);
@@ -151,8 +138,8 @@ public class Parser {
                 throw new JettException("This is not a valid command. Use one of the following:\n" +
                         "1. list\n" +
                         "2. todo <description>\n" +
-                        "3. deadline <description> /by <time>\n" +
-                        "4. event <description> /from <start time> /to <end time>\n" +
+                        "3. deadline <description> /by <date>\n" +
+                        "4. event <description> /from <start date> /to <end date>\n" +
                         "5. mark <task number>\n" +
                         "6. unmark <task number>\n" +
                         "7. delete <task number>\n" +
@@ -160,7 +147,7 @@ public class Parser {
         }
     }
 
-    private static int getTaskNumber(String userInput, String action, ArrayList<Task> list) throws JettException {
+    private static int getTaskNumber(String userInput, String action, TaskList list) throws JettException {
         String[] parts = userInput.split(" "); // parse according to space
         if (parts.length != 2) {
             throw new JettException("Specify a task number (e.g. " + action + " 2)");

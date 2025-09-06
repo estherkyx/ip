@@ -1,29 +1,15 @@
 public class Ui {
-    public void showLine() {
-        System.out.println("____________________________________________________________");
-    }
+    private static final String LINE = "____________________________________________________________\n";
 
     public void showGreeting() {
-        showLine();
-        System.out.println("Hello! I'm Jett\n" + "What can I do for you?");
-        showLine();
+        System.out.println(LINE + "Hello! I'm Jett\n" + "What can I do for you?\n" + LINE);
     }
 
     public void showExit() {
-        showLine();
-        System.out.println("Bye. Hope to see you again soon!");
-        showLine();
-    }
-
-    public void show(String msg) {
-        showLine();
-        System.out.println(msg);
-        showLine();
+        System.out.println(LINE + "Bye. Hope to see you again soon!\n" + LINE);
     }
 
     public void showError(String msg) {
-        showLine();
-        System.out.println(msg);
-        showLine();
+        System.out.println(LINE + msg + "\n" + LINE);
     }
 }

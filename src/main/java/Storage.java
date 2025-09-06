@@ -9,7 +9,7 @@ public class Storage {
     private static final String DATA_PATH = "data/Jett.txt";
 
     // Write task list into file
-    public static void saveNow(ArrayList<Task> list) {
+    public static void saveNow(TaskList list) {
         try {
             File f = new File(DATA_PATH);
             File parent = f.getParentFile();
@@ -18,7 +18,8 @@ public class Storage {
             }
 
             try (FileWriter fw = new FileWriter(DATA_PATH)) {
-                for (Task t : list) {
+                for (int i = 0; i < list.size(); i ++) {
+                    Task t = list.get(i);
                     fw.write(t.toString());
                     fw.write(System.lineSeparator());
                 }

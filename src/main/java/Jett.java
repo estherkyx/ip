@@ -1,17 +1,20 @@
-import java.io.File;
-import java.io.FileWriter;
-import java.io.FileNotFoundException;
-import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Scanner;
 
 public class Jett {
     private static final String LINE = "____________________________________________________________\n";
+    private static final Ui ui = new Ui();
 
     public static void main(String[] args) {
+        TaskList list;
         Scanner scanner = new Scanner(System.in);
-        ArrayList<Task> list = Storage.getData();
-        Ui ui = new Ui();
+
+        try {
+            list = new TaskList(Storage.getData());
+        } catch (Exception e) {
+            ui.showError("Loading error. Starting with an empty list.");
+            list = new TaskList();
+        }
 
         // Greeting
         ui.showGreeting();
