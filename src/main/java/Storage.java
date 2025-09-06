@@ -6,18 +6,22 @@ import java.util.ArrayList;
 import java.util.Scanner;
 
 public class Storage {
-    private static final String DATA_PATH = "data/Jett.txt";
+    private final String filePath;
+
+    public Storage(String filePath) {
+        this.filePath = filePath;
+    }
 
     // Write task list into file
-    public static void saveNow(TaskList list) {
+    public void saveNow(TaskList list) {
         try {
-            File f = new File(DATA_PATH);
+            File f = new File(filePath);
             File parent = f.getParentFile();
             if (parent != null && !parent.exists()) {
                 parent.mkdirs();
             }
 
-            try (FileWriter fw = new FileWriter(DATA_PATH)) {
+            try (FileWriter fw = new FileWriter(filePath)) {
                 for (int i = 0; i < list.size(); i ++) {
                     Task t = list.get(i);
                     fw.write(t.toString());
@@ -30,9 +34,9 @@ public class Storage {
     }
 
     // Get task list from file
-    public static ArrayList<Task> getData() {
+    public ArrayList<Task> getData() throws JettException {
         ArrayList<Task> list = new ArrayList<>();
-        File f = new File(DATA_PATH);
+        File f = new File(filePath);
         if (!f.exists()) {
             return list;
         }

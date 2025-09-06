@@ -1,20 +1,23 @@
-import java.util.ArrayList;
 import java.util.Scanner;
 
 public class Jett {
-    private static final String LINE = "____________________________________________________________\n";
-    private static final Ui ui = new Ui();
+    private Storage storage;
+    private TaskList list;
+    private Ui ui;
 
-    public static void main(String[] args) {
-        TaskList list;
-        Scanner scanner = new Scanner(System.in);
-
+    public Jett(String filePath) {
+        ui = new Ui();
+        storage = new Storage(filePath);
         try {
-            list = new TaskList(Storage.getData());
-        } catch (Exception e) {
+            list = new TaskList(storage.getData());
+        } catch (JettException e) {
             ui.showError("Loading error. Starting with an empty list.");
             list = new TaskList();
         }
+    }
+
+    public void run() {
+        Scanner scanner = new Scanner(System.in);
 
         // Greeting
         ui.showGreeting();
@@ -25,15 +28,21 @@ public class Jett {
             try {
                 Parser.respondToUser(userInput, list);
             } catch (JettException e) {
-                System.out.println(LINE + e.getMessage() + "\n" + LINE);
+                ui.showError(e.getMessage());
             } catch (Exception e) {
-                System.out.println(LINE + "Try again.\n" + LINE);
+                ui.showError("Try again.");
             }
-            Storage.saveNow(list);
+            storage.saveNow(list);
             userInput = scanner.nextLine().trim();
         }
 
         // Exit
         ui.showExit();
+        scanner.close();
+
+    }
+
+    public static void main(String[] args) {
+        new Jett("data/Jett.txt").run();
     }
 }
