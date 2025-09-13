@@ -16,15 +16,15 @@ public class Parser {
             // Isolate the command
             String cmd = input.trim().split("\\s+", 2)[0].toLowerCase();
             return switch (cmd) {
-                case "list" -> LIST;
-                case "mark" -> MARK;
-                case "unmark" -> UNMARK;
-                case "delete" -> DELETE;
-                case "todo" -> TODO;
-                case "deadline" -> DEADLINE;
-                case "event" -> EVENT;
-                case "find" -> FIND;
-                default -> INVALID;
+            case "list" -> LIST;
+            case "mark" -> MARK;
+            case "unmark" -> UNMARK;
+            case "delete" -> DELETE;
+            case "todo" -> TODO;
+            case "deadline" -> DEADLINE;
+            case "event" -> EVENT;
+            case "find" -> FIND;
+            default -> INVALID;
             };
         }
     }
@@ -88,15 +88,18 @@ public class Parser {
             Task todoTask = new Todo(todoDesc);
             list.add(todoTask);
             System.out.println(LINE + "Got it. I've added this task:\n" + "  " + todoTask);
-            System.out.println("Now you have " + list.size() +
-                    (list.size() == 1 ? " task" : " tasks") + " in the list.\n" + LINE);
+            System.out.println("Now you have "
+                    + list.size()
+                    + (list.size() == 1 ? " task" : " tasks") + " in the list.\n" + LINE);
             break;
 
         case DEADLINE: // User input = "deadline"
             if (userInput.length() < 9) {
-                throw new JettException("Fill in the description of your deadline (e.g. deadline complete report /by Sep 6 2025)");
+                throw new JettException(
+                        "Fill in the description of your deadline (e.g. deadline complete report /by Sep 6 2025)"
+                );
             }
-            String[] parsed = userInput.substring(9).split("/by"); // remove "deadline " and parse according to "/by "
+            String[] parsed = userInput.substring(9).split("/by"); // remove "deadline " and parse
             if (parsed.length < 2) {
                 throw new JettException("Missing '/by'. (e.g. deadline complete report /by Sep 6 2025)");
             }
@@ -104,7 +107,8 @@ public class Parser {
             String by = parsed[1].trim();
             if (deadlineDesc.isEmpty() || by.isEmpty()) {
                 throw new JettException(
-                        "Fill in the description and time of your deadline (e.g. deadline complete report /by Sep 6 2025)");
+                        "Fill in the description and time of your deadline (e.g. deadline do report /by Sep 6 2025)"
+                );
             }
             try {
                 Task deadlineTask = new Deadline(deadlineDesc, by);
@@ -113,15 +117,18 @@ public class Parser {
                 throw new JettException("Use valid date format, e.g. 2025-09-06, 6/9/2025, Sep 6 2025");
             }
             System.out.println(LINE + "Got it. I've added this task:\n" + "  " + list.get(list.size() - 1));
-            System.out.println("Now you have " + list.size() +
-                    (list.size() == 1 ? " task" : " tasks") + " in the list.\n" + LINE);
+            System.out.println("Now you have "
+                    + list.size()
+                    + (list.size() == 1 ? " task" : " tasks") + " in the list.\n" + LINE);
             break;
 
         case EVENT: // User input = "event"
             if (userInput.length() < 6) {
-                throw new JettException("Fill in the description of your event (e.g. event camp /from Sep 6 2025 /to Sep 7 2025)");
+                throw new JettException(
+                        "Fill in the description of your event (e.g. event camp /from Sep 6 2025 /to Sep 7 2025)"
+                );
             }
-            String[] parsedFrom = userInput.substring(6).split("/from "); // remove "event " and parse according to "/from "
+            String[] parsedFrom = userInput.substring(6).split("/from "); // remove "event " and parse
             if (parsedFrom.length < 2) {
                 throw new JettException("Missing '/from'. (e.g. event camp /from Sep 6 2025 /to Sep 7 2025)");
             }
@@ -134,7 +141,8 @@ public class Parser {
             String to = parsedTo[1].trim();
             if (eventDesc.isEmpty() || from.isEmpty() || to.isEmpty()) {
                 throw new JettException(
-                        "Fill in the description, start and end date (e.g. event camp /from Sep 6 2025 /to Sep 7 2025)");
+                        "Fill in the description, start and end date (e.g. event camp /from Sep 6 2025 /to Sep 7 2025)"
+                );
             }
             try {
                 Task newTask = new Event(eventDesc, from, to);
@@ -143,8 +151,9 @@ public class Parser {
                 throw new JettException("Use valid date format, e.g. 2025-09-06, 6/9/2025, Sep 6 2025");
             }
             System.out.println(LINE + "Got it. I've added this task:\n" + "  " + list.get(list.size() - 1));
-            System.out.println("Now you have " + list.size() +
-                    (list.size() == 1 ? " task" : " tasks") + " in the list.\n" + LINE);
+            System.out.println("Now you have "
+                    + list.size()
+                    + (list.size() == 1 ? " task" : " tasks") + " in the list.\n" + LINE);
             break;
 
         case FIND: {
@@ -157,7 +166,7 @@ public class Parser {
             }
             System.out.println(list.findString(keyword));
             break;
-            }
+        }
 
         case INVALID:
             // Fallthrough
@@ -182,7 +191,7 @@ public class Parser {
             throw new JettException("Specify a task number (e.g. " + action + " 2)");
         }
         String number = parts[1];
-        if (!number.matches("\\d+") || number.matches("0+")) {  // check if number is an int > 0
+        if (!number.matches("\\d+") || number.matches("0+")) { // check if number is an int > 0
             throw new JettException("Key in a valid task number (e.g. " + action + " 2)");
         } else {
             int taskNumber = Integer.parseInt(number); // convert string to int

@@ -11,7 +11,8 @@ public class Deadline extends Task {
 
     protected LocalDate by;
 
-    /** Creates a new {@code Deadline} task with a description and a due date.
+    /**
+     * Creates a new {@code Deadline} task with a description and a due date.
      *
      * @param description the description of the task
      * @param by the due date string, which will be parsed into a {@link LocalDate}
