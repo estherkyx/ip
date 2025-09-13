@@ -19,20 +19,20 @@ public class DateParser {
      *     <li>{@code MMM d yyyy} (e.g. {@code Sep 14 2025})</li>
      * </ul>
      *
-     * @param s the input string representing a date
+     * @param dateStr the input string representing a date
      * @return the parsed {@link LocalDate} object
      * @throws IllegalArgumentException if the string cannot be parsed
      */
-    public static LocalDate parseDate(String s) {
-        String t = s.trim();
+    public static LocalDate parseDate(String dateStr) {
+        String trimmedDate = dateStr.trim();
         try {
-            return LocalDate.parse(t);
+            return LocalDate.parse(trimmedDate);
         } catch (DateTimeParseException ignore) {}
         try {
-            return LocalDate.parse(t, DateTimeFormatter.ofPattern("d/M/yyyy"));
+            return LocalDate.parse(trimmedDate, DateTimeFormatter.ofPattern("d/M/yyyy"));
         } catch (DateTimeParseException ignore) {}
         try {
-            return LocalDate.parse(t, DateTimeFormatter.ofPattern("MMM d yyyy"));
+            return LocalDate.parse(trimmedDate, DateTimeFormatter.ofPattern("MMM d yyyy"));
         } catch (DateTimeParseException ignore) {}
         throw new IllegalArgumentException("Invalid date.");
     }

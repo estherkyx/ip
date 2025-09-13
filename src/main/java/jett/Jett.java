@@ -9,9 +9,9 @@ import java.util.Scanner;
  * from greeting to exit.
  */
 public class Jett {
-    private Storage storage;
+    private final Storage storage;
     private TaskList list;
-    private Ui ui;
+    private final Ui ui;
 
     /**
      * Constructs a new {@code Jett} instance.

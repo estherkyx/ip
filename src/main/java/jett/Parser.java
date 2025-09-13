@@ -46,119 +46,118 @@ public class Parser {
         Command cmd = Command.from(userInput);
 
         switch (cmd) {
-            case LIST: // User input = "list"
-                System.out.println(list.listString());
-                break;
+        case LIST: // User input = "list"
+            System.out.println(list.listString());
+            break;
 
-            case MARK: // User input = "mark"
-                Task markedTask = list.get(getTaskNumber(userInput, "mark", list) - 1);
-                markedTask.mark();
-                System.out.println(LINE + "Nice! I've marked this task as done:");
-                System.out.println("  " + markedTask + "\n" + LINE);
-                break;
+        case MARK: // User input = "mark"
+            Task markedTask = list.get(getTaskNumber(userInput, "mark", list) - 1);
+            markedTask.mark();
+            System.out.println(LINE + "Nice! I've marked this task as done:");
+            System.out.println("  " + markedTask + "\n" + LINE);
+            break;
 
-            case UNMARK: // User input = "unmark"
-                Task unmarkedTask = list.get(getTaskNumber(userInput, "unmark", list) - 1);
-                unmarkedTask.unmark();
-                System.out.println(LINE + "OK, I've marked this task as not done yet:");
-                System.out.println("  " + unmarkedTask + "\n" + LINE);
-                break;
+        case UNMARK: // User input = "unmark"
+            Task unmarkedTask = list.get(getTaskNumber(userInput, "unmark", list) - 1);
+            unmarkedTask.unmark();
+            System.out.println(LINE + "OK, I've marked this task as not done yet:");
+            System.out.println("  " + unmarkedTask + "\n" + LINE);
+            break;
 
-            case DELETE: // User input = "delete"
-                int taskNumber = getTaskNumber(userInput, "delete", list);
-                Task removedTask = list.get(taskNumber - 1);
-                list.remove(taskNumber - 1);
-                System.out.println(LINE + "Noted. I've removed this task:\n" + "  " + removedTask);
-                if (list.size() == 1) {
-                    System.out.println("Now you have " + list.size() + " task in the list.");
-                } else {
-                    System.out.println("Now you have " + list.size() + " tasks in the list.");
-                }
-                System.out.println(LINE);
-                break;
+        case DELETE: // User input = "delete"
+            int taskNumber = getTaskNumber(userInput, "delete", list);
+            Task removedTask = list.remove(taskNumber - 1);
+            System.out.println(LINE + "Noted. I've removed this task:\n" + "  " + removedTask);
+            if (list.size() == 1) {
+                System.out.println("Now you have " + list.size() + " task in the list.");
+            } else {
+                System.out.println("Now you have " + list.size() + " tasks in the list.");
+            }
+            System.out.println(LINE);
+            break;
 
-            case TODO: // User input = "todo"
-                if (userInput.length() < 5) {
-                    throw new JettException("Fill in the description of your todo (e.g. todo read book)");
-                }
-                String todoDesc = userInput.substring(5); // remove "todo "
-                if (todoDesc.isEmpty()) {
-                    throw new JettException("Fill in the description of your todo (e.g. todo read book)");
-                }
-                Task todoTask = new Todo(todoDesc);
-                list.add(todoTask);
-                System.out.println(LINE + "Got it. I've added this task:\n" + "  " + todoTask);
-                System.out.println("Now you have " + list.size() +
-                        (list.size() == 1 ? " task" : " tasks") + " in the list.\n" + LINE);
-                break;
+        case TODO: // User input = "todo"
+            if (userInput.length() < 5) {
+                throw new JettException("Fill in the description of your todo (e.g. todo read book)");
+            }
+            String todoDesc = userInput.substring(5); // remove "todo "
+            if (todoDesc.isEmpty()) {
+                throw new JettException("Fill in the description of your todo (e.g. todo read book)");
+            }
+            Task todoTask = new Todo(todoDesc);
+            list.add(todoTask);
+            System.out.println(LINE + "Got it. I've added this task:\n" + "  " + todoTask);
+            System.out.println("Now you have " + list.size() +
+                    (list.size() == 1 ? " task" : " tasks") + " in the list.\n" + LINE);
+            break;
 
-            case DEADLINE: // User input = "deadline"
-                if (userInput.length() < 9) {
-                    throw new JettException("Fill in the description of your deadline (e.g. deadline complete report /by Sep 6 2025)");
-                }
-                String[] parsed = userInput.substring(9).split("/by"); // remove "deadline " and parse according to "/by "
-                if (parsed.length < 2) {
-                    throw new JettException("Missing '/by'. (e.g. deadline complete report /by Sep 6 2025)");
-                }
-                String deadlineDesc = parsed[0].trim();
-                String by = parsed[1].trim();
-                if (deadlineDesc.isEmpty() || by.isEmpty()) {
-                    throw new JettException(
-                            "Fill in the description and time of your deadline (e.g. deadline complete report /by Sep 6 2025)");
-                }
-                try {
-                    Task deadlineTask = new Deadline(deadlineDesc, by);
-                    list.add(deadlineTask);
-                } catch (IllegalArgumentException e) {
-                    throw new JettException("Use valid date format, e.g. 2025-09-06, 6/9/2025, Sep 6 2025");
-                }
-                System.out.println(LINE + "Got it. I've added this task:\n" + "  " + list.get(list.size()-1));
-                System.out.println("Now you have " + list.size() +
-                        (list.size() == 1 ? " task" : " tasks") + " in the list.\n" + LINE);
-                break;
+        case DEADLINE: // User input = "deadline"
+            if (userInput.length() < 9) {
+                throw new JettException("Fill in the description of your deadline (e.g. deadline complete report /by Sep 6 2025)");
+            }
+            String[] parsed = userInput.substring(9).split("/by"); // remove "deadline " and parse according to "/by "
+            if (parsed.length < 2) {
+                throw new JettException("Missing '/by'. (e.g. deadline complete report /by Sep 6 2025)");
+            }
+            String deadlineDesc = parsed[0].trim();
+            String by = parsed[1].trim();
+            if (deadlineDesc.isEmpty() || by.isEmpty()) {
+                throw new JettException(
+                        "Fill in the description and time of your deadline (e.g. deadline complete report /by Sep 6 2025)");
+            }
+            try {
+                Task deadlineTask = new Deadline(deadlineDesc, by);
+                list.add(deadlineTask);
+            } catch (IllegalArgumentException e) {
+                throw new JettException("Use valid date format, e.g. 2025-09-06, 6/9/2025, Sep 6 2025");
+            }
+            System.out.println(LINE + "Got it. I've added this task:\n" + "  " + list.get(list.size() - 1));
+            System.out.println("Now you have " + list.size() +
+                    (list.size() == 1 ? " task" : " tasks") + " in the list.\n" + LINE);
+            break;
 
-            case EVENT: // User input = "event"
-                if (userInput.length() < 6) {
-                    throw new JettException("Fill in the description of your event (e.g. event camp /from Sep 6 2025 /to Sep 7 2025)");
-                }
-                String[] parsedFrom = userInput.substring(6).split("/from "); // remove "event " and parse according to "/from "
-                if (parsedFrom.length < 2) {
-                    throw new JettException("Missing '/from'. (e.g. event camp /from Sep 6 2025 /to Sep 7 2025)");
-                }
-                String eventDesc = parsedFrom[0].trim();
-                String[] parsedTo = parsedFrom[1].trim().split("/to "); // parse according to "/to "
-                if (parsedTo.length < 2) {
-                    throw new JettException("Missing '/to'. (e.g. event camp /from Sep 6 2025 /to Sep 7 2025)");
-                }
-                String from = parsedTo[0].trim();
-                String to = parsedTo[1].trim();
-                if (eventDesc.isEmpty() || from.isEmpty() || to.isEmpty()) {
-                    throw new JettException(
-                            "Fill in the description, start and end date (e.g. event camp /from Sep 6 2025 /to Sep 7 2025)");
-                }
-                try {
-                    Task newTask = new Event(eventDesc, from, to);
-                    list.add(newTask);
-                } catch (IllegalArgumentException e) {
-                    throw new JettException("Use valid date format, e.g. 2025-09-06, 6/9/2025, Sep 6 2025");
-                }
-                System.out.println(LINE + "Got it. I've added this task:\n" + "  " + list.get(list.size()-1));
-                System.out.println("Now you have " + list.size() +
-                        (list.size() == 1 ? " task" : " tasks") + " in the list.\n" + LINE);
-                break;
+        case EVENT: // User input = "event"
+            if (userInput.length() < 6) {
+                throw new JettException("Fill in the description of your event (e.g. event camp /from Sep 6 2025 /to Sep 7 2025)");
+            }
+            String[] parsedFrom = userInput.substring(6).split("/from "); // remove "event " and parse according to "/from "
+            if (parsedFrom.length < 2) {
+                throw new JettException("Missing '/from'. (e.g. event camp /from Sep 6 2025 /to Sep 7 2025)");
+            }
+            String eventDesc = parsedFrom[0].trim();
+            String[] parsedTo = parsedFrom[1].trim().split("/to "); // parse according to "/to "
+            if (parsedTo.length < 2) {
+                throw new JettException("Missing '/to'. (e.g. event camp /from Sep 6 2025 /to Sep 7 2025)");
+            }
+            String from = parsedTo[0].trim();
+            String to = parsedTo[1].trim();
+            if (eventDesc.isEmpty() || from.isEmpty() || to.isEmpty()) {
+                throw new JettException(
+                        "Fill in the description, start and end date (e.g. event camp /from Sep 6 2025 /to Sep 7 2025)");
+            }
+            try {
+                Task newTask = new Event(eventDesc, from, to);
+                list.add(newTask);
+            } catch (IllegalArgumentException e) {
+                throw new JettException("Use valid date format, e.g. 2025-09-06, 6/9/2025, Sep 6 2025");
+            }
+            System.out.println(LINE + "Got it. I've added this task:\n" + "  " + list.get(list.size() - 1));
+            System.out.println("Now you have " + list.size() +
+                    (list.size() == 1 ? " task" : " tasks") + " in the list.\n" + LINE);
+            break;
 
-            case INVALID:
-                // Fallthrough
-            default:
-                throw new JettException("This is not a valid command. Use one of the following:\n" +
-                        "1. list\n" +
-                        "2. todo <description>\n" +
-                        "3. deadline <description> /by <date>\n" +
-                        "4. event <description> /from <start date> /to <end date>\n" +
-                        "5. mark <task number>\n" +
-                        "6. unmark <task number>\n" +
-                        "7. delete <task number>\n" +
-                        "8. bye");
+        case INVALID:
+            // Fallthrough
+        default:
+            throw new JettException("This is not a valid command. Use one of the following:\n" +
+                    "1. list\n" +
+                    "2. todo <description>\n" +
+                    "3. deadline <description> /by <date>\n" +
+                    "4. event <description> /from <start date> /to <end date>\n" +
+                    "5. mark <task number>\n" +
+                    "6. unmark <task number>\n" +
+                    "7. delete <task number>\n" +
+                    "8. bye");
         }
     }
 

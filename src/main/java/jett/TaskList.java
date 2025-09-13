@@ -8,13 +8,13 @@ import java.util.ArrayList;
  */
 public class TaskList {
     private static final String LINE = "____________________________________________________________\n";
-    private final ArrayList<Task> list;
+    private final ArrayList<Task> tasks;
 
     /**
      * Creates an empty {@code TaskList}.
      */
     public TaskList() {
-        this.list = new ArrayList<>();
+        this.tasks = new ArrayList<>();
     }
 
     /**
@@ -23,7 +23,7 @@ public class TaskList {
      * @param list an {@link ArrayList} of tasks
      */
     public TaskList(ArrayList<Task> list) {
-        this.list = list;
+        this.tasks = list;
     }
 
     /**
@@ -32,7 +32,7 @@ public class TaskList {
      * @return the size of the list
      */
     public int size() {
-        return list.size();
+        return tasks.size();
     }
 
     /**
@@ -41,7 +41,7 @@ public class TaskList {
      * @return {@code true} if the list has no tasks, otherwise {@code false}
      */
     public boolean isEmpty() {
-        return list.isEmpty();
+        return tasks.isEmpty();
     }
 
     /**
@@ -51,7 +51,7 @@ public class TaskList {
      * @return the {@link Task} at the given index
      */
     public Task get(int index) {
-        return list.get(index);
+        return tasks.get(index);
     }
 
     /**
@@ -60,7 +60,7 @@ public class TaskList {
      * @param t the {@link Task} to add
      */
     public void add(Task t) {
-        list.add(t);
+        tasks.add(t);
     }
 
     /**
@@ -70,7 +70,7 @@ public class TaskList {
      * @return the removed {@link Task}
      */
     public Task remove(int index) {
-        return list.remove(index);
+        return tasks.remove(index);
     }
 
     /**
@@ -80,13 +80,13 @@ public class TaskList {
      * @return formatted string representation of the task list
      */
     public String listString() {
-        if (list.isEmpty()) {
+        if (tasks.isEmpty()) {
             return LINE + "Your list is empty.\n" + LINE;
         }
         StringBuilder sb = new StringBuilder();
         sb.append(LINE).append("Here are the tasks in your list:\n");
-        for (int i = 0; i < list.size(); i++) {
-            sb.append((i + 1)).append(".").append(list.get(i).toString()).append("\n");
+        for (int i = 0; i < tasks.size(); i++) {
+            sb.append((i + 1)).append(".").append(tasks.get(i).toString()).append("\n");
         }
         sb.append(LINE);
         return sb.toString();
