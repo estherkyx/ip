@@ -92,12 +92,23 @@ public class TaskList {
         return sb.toString();
     }
 
+    /**
+     * Finds tasks in the task list that contain the given keyword in their description
+     * (case-insensitive) and returns a formatted string of matching tasks.
+     *
+     * <p>If there are matches, the result will include a header line followed by
+     * each matching task with its index. If there are no matches, the method returns
+     * a message stating that no tasks were found.</p>
+     *
+     * @param word the keyword to search for within task descriptions
+     * @return a formatted string listing all matching tasks, or a message if none are found
+     */
     public String findString(String word) {
         String keyword = word.toLowerCase();
         StringBuilder sb = new StringBuilder();
         int count = 0;
 
-        for (Task t : list) {
+        for (Task t : tasks) {
             if (t.getDescription().toLowerCase().contains(keyword)) {
                 if (count == 0) {
                     sb.append(LINE).append("Here are the matching tasks in your list:\n");

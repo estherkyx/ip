@@ -1,18 +1,18 @@
 package jett;
 
-import org.junit.jupiter.api.Test;
-
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNull;
+
+import org.junit.jupiter.api.Test;
 
 public class StorageTest {
     @Test
     public void parseLine_validTaskString_success() {
         // Valid Todo Task
         Task t = new Todo("test");
-        assertEquals(t.toString(),Storage.parseLine("[T][ ] test").toString());
+        assertEquals(t.toString(), Storage.parseLine("[T][ ] test").toString());
         t.mark();
-        assertEquals(t.toString(),Storage.parseLine("[T][X] test").toString());
+        assertEquals(t.toString(), Storage.parseLine("[T][X] test").toString());
 
         // Valid Deadline Task
         Task d = new Deadline("test", "Sep 13 2025");

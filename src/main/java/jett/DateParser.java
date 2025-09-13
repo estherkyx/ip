@@ -24,17 +24,22 @@ public class DateParser {
      * @throws IllegalArgumentException if the string cannot be parsed
      */
     public static LocalDate parseDate(String dateStr) {
-        String trimmedDate = dateStr.trim();
-        try {
-            return LocalDate.parse(trimmedDate);
-        } catch (DateTimeParseException ignore) {}
-        try {
-            return LocalDate.parse(trimmedDate, DateTimeFormatter.ofPattern("d/M/yyyy"));
-        } catch (DateTimeParseException ignore) {}
-        try {
-            return LocalDate.parse(trimmedDate, DateTimeFormatter.ofPattern("MMM d yyyy"));
-        } catch (DateTimeParseException ignore) {}
-        throw new IllegalArgumentException("Invalid date.");
+        String s = dateStr.trim();
+        DateTimeFormatter[] formats = {
+            DateTimeFormatter.ISO_LOCAL_DATE, // 2025-09-14
+            DateTimeFormatter.ofPattern("d/M/yyyy"), // 1/9/2025
+            DateTimeFormatter.ofPattern("MMM d yyyy") // Sep 1 2025
+        };
+
+        DateTimeParseException last = null;
+        for (DateTimeFormatter format : formats) {
+            try {
+                return LocalDate.parse(s, format);
+            } catch (DateTimeParseException e) {
+                last = e;
+            }
+        }
+        throw new IllegalArgumentException("Invalid date: " + s, last);
     }
 
     /**

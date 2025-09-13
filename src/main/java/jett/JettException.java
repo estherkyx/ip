@@ -7,7 +7,8 @@ package jett;
  */
 public class JettException extends Exception {
 
-    /** Constructs a new {@code JettException} with the specified detail message.
+    /**
+     * Constructs a new {@code JettException} with the specified detail message.
      *
      * @param message the detail message describing the cause of the exception
      */
