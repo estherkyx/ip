@@ -3,9 +3,9 @@ package jett;
 import java.util.Scanner;
 
 public class Jett {
-    private Storage storage;
+    private final Storage storage;
     private TaskList list;
-    private Ui ui;
+    private final Ui ui;
 
     public Jett(String filePath) {
         ui = new Ui();

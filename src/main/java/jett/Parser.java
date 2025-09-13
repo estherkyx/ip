@@ -53,8 +53,7 @@ public class Parser {
 
         case DELETE: // User input = "delete"
             int taskNumber = getTaskNumber(userInput, "delete", list);
-            Task removedTask = list.get(taskNumber - 1);
-            list.remove(taskNumber - 1);
+            Task removedTask = list.remove(taskNumber - 1);
             System.out.println(LINE + "Noted. I've removed this task:\n" + "  " + removedTask);
             if (list.size() == 1) {
                 System.out.println("Now you have " + list.size() + " task in the list.");

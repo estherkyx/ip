@@ -4,44 +4,44 @@ import java.util.ArrayList;
 
 public class TaskList {
     private static final String LINE = "____________________________________________________________\n";
-    private final ArrayList<Task> list;
+    private final ArrayList<Task> tasks;
 
     public TaskList() {
-        this.list = new ArrayList<>();
+        this.tasks = new ArrayList<>();
     }
 
     public TaskList(ArrayList<Task> list) {
-        this.list = list;
+        this.tasks = list;
     }
 
     public int size() {
-        return list.size();
+        return tasks.size();
     }
 
     public boolean isEmpty() {
-        return list.isEmpty();
+        return tasks.isEmpty();
     }
 
     public Task get(int index) {
-        return list.get(index);
+        return tasks.get(index);
     }
 
     public void add(Task t) {
-        list.add(t);
+        tasks.add(t);
     }
 
     public Task remove(int index) {
-        return list.remove(index);
+        return tasks.remove(index);
     }
 
     public String listString() {
-        if (list.isEmpty()) {
+        if (tasks.isEmpty()) {
             return LINE + "Your list is empty.\n" + LINE;
         }
         StringBuilder sb = new StringBuilder();
         sb.append(LINE).append("Here are the tasks in your list:\n");
-        for (int i = 0; i < list.size(); i++) {
-            sb.append((i + 1)).append(".").append(list.get(i).toString()).append("\n");
+        for (int i = 0; i < tasks.size(); i++) {
+            sb.append((i + 1)).append(".").append(tasks.get(i).toString()).append("\n");
         }
         sb.append(LINE);
         return sb.toString();

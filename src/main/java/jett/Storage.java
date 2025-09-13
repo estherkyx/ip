@@ -17,8 +17,8 @@ public class Storage {
     // Write task list into file
     public void saveNow(TaskList list) {
         try {
-            File f = new File(filePath);
-            File parent = f.getParentFile();
+            File file = new File(filePath);
+            File parent = file.getParentFile();
             if (parent != null && !parent.exists()) {
                 parent.mkdirs();
             }
@@ -43,11 +43,11 @@ public class Storage {
             return list;
         }
 
-        Scanner s = null;
+        Scanner scanner = null;
         try {
-            s = new Scanner(f);
-            while (s.hasNext()) {
-                String line = s.nextLine().trim();
+            scanner = new Scanner(f);
+            while (scanner.hasNext()) {
+                String line = scanner.nextLine().trim();
                 if (line.isEmpty()) {
                     continue;
                 }
@@ -61,8 +61,8 @@ public class Storage {
         } catch (Exception e) {
             System.out.println("Could not load data");
         } finally {
-            if (s != null) {
-                s.close();
+            if (scanner != null) {
+                scanner.close();
             }
         }
         return list;

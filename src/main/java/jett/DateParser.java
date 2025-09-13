@@ -5,16 +5,16 @@ import java.time.format.DateTimeFormatter;
 import java.time.format.DateTimeParseException;
 
 public class DateParser {
-    public static LocalDate parseDate(String s) {
-        String t = s.trim();
+    public static LocalDate parseDate(String dateStr) {
+        String trimmedDate = dateStr.trim();
         try {
-            return LocalDate.parse(t);
+            return LocalDate.parse(trimmedDate);
         } catch (DateTimeParseException ignore) {}
         try {
-            return LocalDate.parse(t, DateTimeFormatter.ofPattern("d/M/yyyy"));
+            return LocalDate.parse(trimmedDate, DateTimeFormatter.ofPattern("d/M/yyyy"));
         } catch (DateTimeParseException ignore) {}
         try {
-            return LocalDate.parse(t, DateTimeFormatter.ofPattern("MMM d yyyy"));
+            return LocalDate.parse(trimmedDate, DateTimeFormatter.ofPattern("MMM d yyyy"));
         } catch (DateTimeParseException ignore) {}
         throw new IllegalArgumentException("Invalid date.");
     }
