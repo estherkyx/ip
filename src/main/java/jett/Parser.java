@@ -1,5 +1,10 @@
 package jett;
 
+/**
+ * Parses and executes user commands for the Jett application.
+ * Exposes a single entry point to handle a line of user input
+ * and mutate the provided {@link TaskList} accordingly.
+ */
 public class Parser {
     private static final String LINE = "____________________________________________________________\n";
 
@@ -23,7 +28,15 @@ public class Parser {
         }
     }
 
-    // Function to respond to user input
+    /**
+     * Parses a single line of user input and applies the command to the given task list.
+     * Supports the commands: list, todo, deadline, event, mark, unmark, delete.
+     *
+     * @param userInput the raw user input line
+     * @param list the {@link TaskList} to read or modify
+     * @throws JettException if the input is blank, malformed, out of bounds,
+     *                       or contains an invalid command
+     */
     public static void respondToUser(String userInput, TaskList list) throws JettException {
         // Blank user input
         if (userInput.isBlank()) {
