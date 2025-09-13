@@ -46,4 +46,27 @@ public class TaskList {
         sb.append(LINE);
         return sb.toString();
     }
+
+    public String findString(String word) {
+        String keyword = word.toLowerCase();
+        StringBuilder sb = new StringBuilder();
+        int count = 0;
+
+        for (Task t : list) {
+            if (t.getDescription().toLowerCase().contains(keyword)) {
+                if (count == 0) {
+                    sb.append(LINE).append("Here are the matching tasks in your list:\n");
+                }
+                count++;
+                sb.append(count).append(".").append(t.toString()).append("\n");
+            }
+        }
+
+        if (count == 0) {
+            return LINE + "No matching tasks found.\n" + LINE;
+        }
+
+        sb.append(LINE);
+        return sb.toString();
+    }
 }
