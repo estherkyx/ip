@@ -10,7 +10,7 @@ public class Parser {
 
     // Enums
     enum Command {
-        LIST, MARK, UNMARK, DELETE, TODO, DEADLINE, EVENT, INVALID;
+        LIST, MARK, UNMARK, DELETE, TODO, DEADLINE, EVENT, FIND, INVALID;
 
         static Command from(String input) {
             // Isolate the command
@@ -23,6 +23,7 @@ public class Parser {
                 case "todo" -> TODO;
                 case "deadline" -> DEADLINE;
                 case "event" -> EVENT;
+                case "find" -> FIND;
                 default -> INVALID;
             };
         }
@@ -146,18 +147,32 @@ public class Parser {
                     (list.size() == 1 ? " task" : " tasks") + " in the list.\n" + LINE);
             break;
 
+        case FIND: {
+            if (userInput.length() < 5) {
+                throw new JettException("Provide a keyword (e.g. find book)");
+            }
+            String keyword = userInput.substring(5).trim();
+            if (keyword.isEmpty()) {
+                throw new JettException("Provide a keyword (e.g. find book)");
+            }
+            System.out.println(list.findString(keyword));
+            break;
+            }
+
         case INVALID:
             // Fallthrough
         default:
-            throw new JettException("This is not a valid command. Use one of the following:\n" +
-                    "1. list\n" +
-                    "2. todo <description>\n" +
-                    "3. deadline <description> /by <date>\n" +
-                    "4. event <description> /from <start date> /to <end date>\n" +
-                    "5. mark <task number>\n" +
-                    "6. unmark <task number>\n" +
-                    "7. delete <task number>\n" +
-                    "8. bye");
+            throw new JettException("""
+                    This is not a valid command. Use one of the following:
+                    1. list
+                    2. todo <description>
+                    3. deadline <description> /by <date>
+                    4. event <description> /from <start date> /to <end date>
+                    5. mark <task number>
+                    6. unmark <task number>
+                    7. delete <task number>
+                    8. find <keyword>
+                    9. bye""");
         }
     }
 
