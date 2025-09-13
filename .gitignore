@@ -15,6 +15,6 @@ bin/
 
 /text-ui-test/ACTUAL.TXT
 text-ui-test/EXPECTED-UNIX.TXT
-/data/Jett.txt
-text-ui-test/data/Jett.txt
+**/data/Jett.txt
 *.class
+*.jar
