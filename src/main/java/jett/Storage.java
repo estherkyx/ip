@@ -7,14 +7,29 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Scanner;
 
+/**
+ * Handles persistent storage for the Jett application.
+ * Reads tasks from a data file on startup and writes the current task list to disk.
+ */
 public class Storage {
     private final String filePath;
 
+    /**
+     * Creates a {@code Storage} bound to the given file path.
+     *
+     * @param filePath path to the data file (e.g., {@code data/Jett.txt})
+     */
     public Storage(String filePath) {
         this.filePath = filePath;
     }
 
-    // Write task list into file
+    /**
+     * Writes the current {@link TaskList} to disk, creating parent directories if needed.
+     * Each task is written on its own line using the task's {@code toString()} format.
+     * Any {@link IOException} that occurs is reported to {@code System.out}.
+     *
+     * @param list the list of tasks to persist
+     */
     public void saveNow(TaskList list) {
         try {
             File f = new File(filePath);
@@ -35,7 +50,13 @@ public class Storage {
         }
     }
 
-    // Get task list from file
+    /**
+     * Loads tasks from the bound data file.
+     * Lines that cannot be parsed are skipped safely.
+     *
+     * @return an {@link ArrayList} of loaded {@link Task} objects; empty if the file does not exist
+     * @throws JettException reserved for signaling load failures to callers
+     */
     public ArrayList<Task> getData() throws JettException {
         ArrayList<Task> list = new ArrayList<>();
         File f = new File(filePath);
@@ -68,6 +89,13 @@ public class Storage {
         return list;
     }
 
+    /**
+     * Parses a single serialised task line into a {@link Task}.
+     * Expected formats are those produced by {@code Task.toString()}.
+     * Returns {@code null} if the line is malformed or dates are invalid.
+     * @param line the serialised task line
+     * @return a {@link Task} instance, or {@code null} if unparseable
+     */
     protected static Task parseLine(String line) {
         // Corrupted data (not in expected format)
         if (line.charAt(0) != '[' || line.length() < 6 ) {
