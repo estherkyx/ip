@@ -24,7 +24,7 @@ public class Storage {
             }
 
             try (FileWriter fw = new FileWriter(filePath)) {
-                for (int i = 0; i < list.size(); i ++) {
+                for (int i = 0; i < list.size(); i++) {
                     Task t = list.get(i);
                     fw.write(t.toString());
                     fw.write(System.lineSeparator());
@@ -70,7 +70,7 @@ public class Storage {
 
     protected static Task parseLine(String line) {
         // Corrupted data (not in expected format)
-        if (line.charAt(0) != '[' || line.length() < 6 ) {
+        if (line.charAt(0) != '[' || line.length() < 6) {
             return null;
         }
 
@@ -92,56 +92,56 @@ public class Storage {
 
         Task t = null;
         switch (taskType) {
-            case 'T': {
-                t = new Todo(rest);
-                break;
-            }
-            case 'D': {
-                int open = rest.lastIndexOf('(');
-                int close = rest.lastIndexOf(')');
-                if (open == -1 || close == -1 || open > close) {
-                    return null;
-                }
-                String deadlineDesc = rest.substring(0, open).trim();
-                int byIndex = rest.indexOf("by: ");
-                if (byIndex == -1) {
-                    return null;
-                }
-                String by = rest.substring(byIndex + 3, close).trim(); // "(by: 6pm)" -> "6pm"
-                try {
-                    t = new Deadline(deadlineDesc, by);
-                } catch (IllegalArgumentException e) {
-                    return null;
-                }
-                break;
-            }
-            case 'E': {
-                int open = rest.lastIndexOf('(');
-                int close = rest.lastIndexOf(')');
-                if (open == -1 || close == -1 || open > close) {
-                    return null;
-                }
-                String eventDesc = rest.substring(0, open).trim();
-                int fromIndex = rest.indexOf("from: ");
-                if (fromIndex == -1) {
-                    return null;
-                }
-                String time = rest.substring(fromIndex + 5, close).trim(); // "from: 3pm to: 4pm" -> "3pm to: 4pm"
-                int toIndex = time.indexOf("to:");
-                if (toIndex == -1) {
-                    return null;
-                }
-                String from = time.substring(0, toIndex).trim(); // "3pm to: 4pm" -> "3pm"
-                String to = time.substring(toIndex + 3).trim(); // "3pm to: 4pm" -> "4pm"
-                try {
-                    t = new Event(eventDesc, from, to);
-                } catch (IllegalArgumentException e) {
-                    return null;
-                }
-                break;
-            }
-            default:
+        case 'T': {
+            t = new Todo(rest);
+            break;
+        }
+        case 'D': {
+            int open = rest.lastIndexOf('(');
+            int close = rest.lastIndexOf(')');
+            if (open == -1 || close == -1 || open > close) {
                 return null;
+            }
+            String deadlineDesc = rest.substring(0, open).trim();
+            int byIndex = rest.indexOf("by: ");
+            if (byIndex == -1) {
+                return null;
+            }
+            String by = rest.substring(byIndex + 3, close).trim(); // "(by: 6pm)" -> "6pm"
+            try {
+                t = new Deadline(deadlineDesc, by);
+            } catch (IllegalArgumentException e) {
+                return null;
+            }
+            break;
+        }
+        case 'E': {
+            int open = rest.lastIndexOf('(');
+            int close = rest.lastIndexOf(')');
+            if (open == -1 || close == -1 || open > close) {
+                return null;
+            }
+            String eventDesc = rest.substring(0, open).trim();
+            int fromIndex = rest.indexOf("from: ");
+            if (fromIndex == -1) {
+                return null;
+            }
+            String time = rest.substring(fromIndex + 5, close).trim(); // "from: 3pm to: 4pm" -> "3pm to: 4pm"
+            int toIndex = time.indexOf("to:");
+            if (toIndex == -1) {
+                return null;
+            }
+            String from = time.substring(0, toIndex).trim(); // "3pm to: 4pm" -> "3pm"
+            String to = time.substring(toIndex + 3).trim(); // "3pm to: 4pm" -> "4pm"
+            try {
+                t = new Event(eventDesc, from, to);
+            } catch (IllegalArgumentException e) {
+                return null;
+            }
+            break;
+        }
+        default:
+            return null;
         }
 
         if (isMarked) {
