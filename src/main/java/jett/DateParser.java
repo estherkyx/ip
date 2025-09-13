@@ -16,7 +16,7 @@ public class DateParser {
         try {
             return LocalDate.parse(t, DateTimeFormatter.ofPattern("MMM d yyyy"));
         } catch (DateTimeParseException ignore) {}
-        throw new IllegalArgumentException();
+        throw new IllegalArgumentException("Invalid date.");
     }
 
     public static String formatDate(LocalDate date) {
