@@ -68,7 +68,7 @@ public class Storage {
         return list;
     }
 
-    private static Task parseLine(String line) {
+    protected static Task parseLine(String line) {
         // Corrupted data (not in expected format)
         if (line.charAt(0) != '[' || line.length() < 6 ) {
             return null;
@@ -77,7 +77,7 @@ public class Storage {
         char taskType = line.charAt(1); // T or D or E
         boolean isMarked = line.contains("[X]");
 
-        // Locate the second close parenthesis
+        // Locate the second close brackets
         int firstClose = line.indexOf(']');
         if (firstClose == -1) {
             return null;
@@ -103,7 +103,11 @@ public class Storage {
                     return null;
                 }
                 String deadlineDesc = rest.substring(0, open).trim();
-                String by = rest.substring(open + 4, close).trim(); // "(by: 6pm)" -> "6pm"
+                int byIndex = rest.indexOf("by: ");
+                if (byIndex == -1) {
+                    return null;
+                }
+                String by = rest.substring(byIndex + 3, close).trim(); // "(by: 6pm)" -> "6pm"
                 try {
                     t = new Deadline(deadlineDesc, by);
                 } catch (IllegalArgumentException e) {
@@ -118,8 +122,15 @@ public class Storage {
                     return null;
                 }
                 String eventDesc = rest.substring(0, open).trim();
-                String time = rest.substring(open + 6, close).trim(); // "from: 3pm to: 4pm" -> "3pm to: 4pm"
+                int fromIndex = rest.indexOf("from: ");
+                if (fromIndex == -1) {
+                    return null;
+                }
+                String time = rest.substring(fromIndex + 5, close).trim(); // "from: 3pm to: 4pm" -> "3pm to: 4pm"
                 int toIndex = time.indexOf("to:");
+                if (toIndex == -1) {
+                    return null;
+                }
                 String from = time.substring(0, toIndex).trim(); // "3pm to: 4pm" -> "3pm"
                 String to = time.substring(toIndex + 3).trim(); // "3pm to: 4pm" -> "4pm"
                 try {
