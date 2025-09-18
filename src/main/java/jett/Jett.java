@@ -26,49 +26,24 @@ public class Jett {
         try {
             list = new TaskList(storage.getData());
         } catch (JettException e) {
-            ui.showError("Loading error. Starting with an empty list.");
+            System.out.println(ui.getError("Loading error. Starting with an empty list."));
             list = new TaskList();
         }
     }
 
-    /**
-     * Runs the main program loop of Jett.
-     * Displays the greeting, processes user input until "bye" is entered,
-     * saves data after each command, and displays the exit message.
-     */
-    public void run() {
-        Scanner scanner = new Scanner(System.in);
-
-        // Greeting
-        ui.showGreeting();
-
-        // Looped User Input
-        String userInput = scanner.nextLine().trim();
-        while (!userInput.equals("bye")) {
-            try {
-                Parser.respondToUser(userInput, list);
-            } catch (JettException e) {
-                ui.showError(e.getMessage());
-            } catch (Exception e) {
-                ui.showError("Try again.");
-            }
-            storage.saveNow(list);
-            userInput = scanner.nextLine().trim();
-        }
-
-        // Exit
-        ui.showExit();
-        scanner.close();
-
+    public String getGreeting() {
+        return ui.getGreeting();
     }
 
-    /**
-     * Entry point of the program. Creates a new Jett instance
-     * with the default storage file path and runs it.
-     *
-     * @param args Command line arguments (not used).
-     */
-    public static void main(String[] args) {
-        new Jett("data/Jett.txt").run();
+    public String getResponse(String input) {
+        try {
+            String response = Parser.respondToUser(input, list);
+            storage.saveNow(list);
+            return response;
+        } catch (JettException e) {
+            return ui.getError(e.getMessage());
+        } catch (Exception e) {
+            return ui.getError("Try again.");
+        }
     }
 }

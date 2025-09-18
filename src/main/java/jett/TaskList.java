@@ -7,7 +7,6 @@ import java.util.ArrayList;
  * Provides methods to add, remove, retrieve, and display tasks.
  */
 public class TaskList {
-    private static final String LINE = "____________________________________________________________\n";
     private final ArrayList<Task> tasks;
 
     /**
@@ -81,14 +80,13 @@ public class TaskList {
      */
     public String listString() {
         if (tasks.isEmpty()) {
-            return LINE + "Your list is empty.\n" + LINE;
+            return "Your list is empty.";
         }
         StringBuilder sb = new StringBuilder();
-        sb.append(LINE).append("Here are the tasks in your list:\n");
+        sb.append("Here are the tasks in your list: \n");
         for (int i = 0; i < tasks.size(); i++) {
-            sb.append((i + 1)).append(".").append(tasks.get(i).toString()).append("\n");
+            sb.append((i + 1)).append(". ").append(tasks.get(i).toString()).append("\n");
         }
-        sb.append(LINE);
         return sb.toString();
     }
 
@@ -111,18 +109,17 @@ public class TaskList {
         for (Task t : tasks) {
             if (t.getDescription().toLowerCase().contains(keyword)) {
                 if (count == 0) {
-                    sb.append(LINE).append("Here are the matching tasks in your list:\n");
+                    sb.append("Here are the matching tasks in your list:\n");
                 }
                 count++;
-                sb.append(count).append(".").append(t.toString()).append("\n");
+                sb.append(count).append(". ").append(t.toString()).append("\n");
             }
         }
 
         if (count == 0) {
-            return LINE + "No matching tasks found.\n" + LINE;
+            return "No matching tasks found.\n";
         }
 
-        sb.append(LINE);
         return sb.toString();
     }
 }

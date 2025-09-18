@@ -6,28 +6,33 @@ package jett;
  * exit messages and error messages to the console.
  */
 public class Ui {
-    private static final String LINE = "____________________________________________________________\n";
 
     /**
-     * Displays the greeting message when the application starts.
+     * Provides the greeting message when the application starts.
+     *
+     * @return the string for the greeting message
      */
-    public void showGreeting() {
-        System.out.println(LINE + "Hello! I'm Jett\n" + "What can I do for you?\n" + LINE);
+    public String getGreeting() {
+       return "Hello! I'm Jett.\n" + "What can I do for you?";
     }
 
     /**
-     * Displays the exit message when the application ends.
+     * Provides the exit message when the application ends.
+     *
+     * @return the string for the exit message
      */
-    public void showExit() {
-        System.out.println(LINE + "Bye. Hope to see you again soon!\n" + LINE);
+    public String getExit() {
+        return "Bye. Hope to see you again soon!";
     }
 
     /**
-     * Displays an error message to the user.
+     * Provides an error message meant for the user.
      *
      * @param msg the error message to display
+     *
+     * @return the string for the error message
      */
-    public void showError(String msg) {
-        System.out.println(LINE + msg + "\n" + LINE);
+    public String getError(String msg) {
+        return msg;
     }
 }
