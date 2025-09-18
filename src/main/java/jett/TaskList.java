@@ -85,7 +85,7 @@ public class TaskList {
         StringBuilder sb = new StringBuilder();
         sb.append("Here are the tasks in your list: \n");
         for (int i = 0; i < tasks.size(); i++) {
-            sb.append((i + 1)).append(".").append(tasks.get(i).toString()).append("\n");
+            sb.append((i + 1)).append(". ").append(tasks.get(i).toString()).append("\n");
         }
         return sb.toString();
     }
@@ -112,7 +112,7 @@ public class TaskList {
                     sb.append("Here are the matching tasks in your list:\n");
                 }
                 count++;
-                sb.append(count).append(".").append(t.toString()).append("\n");
+                sb.append(count).append(". ").append(t.toString()).append("\n");
             }
         }
 

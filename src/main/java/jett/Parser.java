@@ -54,18 +54,18 @@ public class Parser {
         case MARK: // User input = "mark"
             Task markedTask = list.get(getTaskNumber(userInput, "mark", list) - 1);
             markedTask.mark();
-            return "Nice! I've marked this task as done:\n" + "  " + markedTask;
+            return "Nice! I've marked this task as done:\n" + markedTask;
 
         case UNMARK: // User input = "unmark"
             Task unmarkedTask = list.get(getTaskNumber(userInput, "unmark", list) - 1);
             unmarkedTask.unmark();
-            return "OK, I've marked this task as not done yet:" + "  " + unmarkedTask;
+            return "OK, I've marked this task as not done yet:\n" + unmarkedTask;
 
         case DELETE: // User input = "delete"
             int taskNumber = getTaskNumber(userInput, "delete", list);
             Task removedTask = list.remove(taskNumber - 1);
             return "Noted. I've removed this task:\n"
-                    + "  " + removedTask
+                    + removedTask
                     + "\nNow you have " + list.size() + (list.size() == 1 ? " task" : " tasks") + " in the list.";
 
         case TODO: // User input = "todo"
@@ -79,7 +79,7 @@ public class Parser {
             Task todoTask = new Todo(todoDesc);
             list.add(todoTask);
             return "Got it. I've added this task:\n"
-                    + "  " + todoTask
+                    + todoTask
                     + "\nNow you have " + list.size() + (list.size() == 1 ? " task" : " tasks") + " in the list.";
 
         case DEADLINE: // User input = "deadline"
@@ -106,7 +106,7 @@ public class Parser {
                 throw new JettException("Use valid date format, e.g. 2025-09-06, 6/9/2025, Sep 6 2025");
             }
             return "Got it. I've added this task:\n"
-                    + "  " + list.get(list.size() - 1)
+                    + list.get(list.size() - 1)
                     + "\nNow you have " + list.size() + (list.size() == 1 ? " task" : " tasks") + " in the list.";
 
         case EVENT: // User input = "event"
@@ -138,7 +138,7 @@ public class Parser {
                 throw new JettException("Use valid date format, e.g. 2025-09-06, 6/9/2025, Sep 6 2025");
             }
             return "Got it. I've added this task:\n"
-                    + "  " + list.get(list.size() - 1)
+                    + list.get(list.size() - 1)
                     + "\nNow you have " + list.size() + (list.size() == 1 ? " task" : " tasks") + " in the list.";
 
         case FIND: {

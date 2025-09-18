@@ -13,7 +13,7 @@ public class Ui {
      * @return the string for the greeting message
      */
     public String getGreeting() {
-       return "Hello! I'm Jett\n" + "What can I do for you?";
+       return "Hello! I'm Jett.\n" + "What can I do for you?";
     }
 
     /**
