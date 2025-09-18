@@ -6,11 +6,10 @@ package jett;
  * and mutate the provided {@link TaskList} accordingly.
  */
 public class Parser {
-    private static final String LINE = "____________________________________________________________\n";
 
     // Enums
     enum Command {
-        LIST, MARK, UNMARK, DELETE, TODO, DEADLINE, EVENT, FIND, INVALID;
+        LIST, MARK, UNMARK, DELETE, TODO, DEADLINE, EVENT, FIND, INVALID, BYE;
 
         static Command from(String input) {
             // Isolate the command
@@ -24,6 +23,7 @@ public class Parser {
             case "deadline" -> DEADLINE;
             case "event" -> EVENT;
             case "find" -> FIND;
+            case "bye" -> BYE;
             default -> INVALID;
             };
         }
@@ -31,14 +31,15 @@ public class Parser {
 
     /**
      * Parses a single line of user input and applies the command to the given task list.
-     * Supports the commands: list, todo, deadline, event, mark, unmark, delete.
+     * Supports the commands: list, todo, deadline, event, mark, unmark, delete, bye.
      *
      * @param userInput the raw user input line
      * @param list the {@link TaskList} to read or modify
+     * @return the message that Jett will reply
      * @throws JettException if the input is blank, malformed, out of bounds,
      *                       or contains an invalid command
      */
-    public static void respondToUser(String userInput, TaskList list) throws JettException {
+    public static String respondToUser(String userInput, TaskList list) throws JettException {
         // Blank user input
         if (userInput.isBlank()) {
             throw new JettException("What can I do for you?");
@@ -48,34 +49,24 @@ public class Parser {
 
         switch (cmd) {
         case LIST: // User input = "list"
-            System.out.println(list.listString());
-            break;
+            return list.listString();
 
         case MARK: // User input = "mark"
             Task markedTask = list.get(getTaskNumber(userInput, "mark", list) - 1);
             markedTask.mark();
-            System.out.println(LINE + "Nice! I've marked this task as done:");
-            System.out.println("  " + markedTask + "\n" + LINE);
-            break;
+            return "Nice! I've marked this task as done:\n" + "  " + markedTask;
 
         case UNMARK: // User input = "unmark"
             Task unmarkedTask = list.get(getTaskNumber(userInput, "unmark", list) - 1);
             unmarkedTask.unmark();
-            System.out.println(LINE + "OK, I've marked this task as not done yet:");
-            System.out.println("  " + unmarkedTask + "\n" + LINE);
-            break;
+            return "OK, I've marked this task as not done yet:" + "  " + unmarkedTask;
 
         case DELETE: // User input = "delete"
             int taskNumber = getTaskNumber(userInput, "delete", list);
             Task removedTask = list.remove(taskNumber - 1);
-            System.out.println(LINE + "Noted. I've removed this task:\n" + "  " + removedTask);
-            if (list.size() == 1) {
-                System.out.println("Now you have " + list.size() + " task in the list.");
-            } else {
-                System.out.println("Now you have " + list.size() + " tasks in the list.");
-            }
-            System.out.println(LINE);
-            break;
+            return "Noted. I've removed this task:\n"
+                    + "  " + removedTask
+                    + "\nNow you have " + list.size() + (list.size() == 1 ? " task" : " tasks") + " in the list.";
 
         case TODO: // User input = "todo"
             if (userInput.length() < 5) {
@@ -87,11 +78,9 @@ public class Parser {
             }
             Task todoTask = new Todo(todoDesc);
             list.add(todoTask);
-            System.out.println(LINE + "Got it. I've added this task:\n" + "  " + todoTask);
-            System.out.println("Now you have "
-                    + list.size()
-                    + (list.size() == 1 ? " task" : " tasks") + " in the list.\n" + LINE);
-            break;
+            return "Got it. I've added this task:\n"
+                    + "  " + todoTask
+                    + "\nNow you have " + list.size() + (list.size() == 1 ? " task" : " tasks") + " in the list.";
 
         case DEADLINE: // User input = "deadline"
             if (userInput.length() < 9) {
@@ -116,11 +105,9 @@ public class Parser {
             } catch (IllegalArgumentException e) {
                 throw new JettException("Use valid date format, e.g. 2025-09-06, 6/9/2025, Sep 6 2025");
             }
-            System.out.println(LINE + "Got it. I've added this task:\n" + "  " + list.get(list.size() - 1));
-            System.out.println("Now you have "
-                    + list.size()
-                    + (list.size() == 1 ? " task" : " tasks") + " in the list.\n" + LINE);
-            break;
+            return "Got it. I've added this task:\n"
+                    + "  " + list.get(list.size() - 1)
+                    + "\nNow you have " + list.size() + (list.size() == 1 ? " task" : " tasks") + " in the list.";
 
         case EVENT: // User input = "event"
             if (userInput.length() < 6) {
@@ -150,11 +137,9 @@ public class Parser {
             } catch (IllegalArgumentException e) {
                 throw new JettException("Use valid date format, e.g. 2025-09-06, 6/9/2025, Sep 6 2025");
             }
-            System.out.println(LINE + "Got it. I've added this task:\n" + "  " + list.get(list.size() - 1));
-            System.out.println("Now you have "
-                    + list.size()
-                    + (list.size() == 1 ? " task" : " tasks") + " in the list.\n" + LINE);
-            break;
+            return "Got it. I've added this task:\n"
+                    + "  " + list.get(list.size() - 1)
+                    + "\nNow you have " + list.size() + (list.size() == 1 ? " task" : " tasks") + " in the list.";
 
         case FIND: {
             if (userInput.length() < 5) {
@@ -164,12 +149,16 @@ public class Parser {
             if (keyword.isEmpty()) {
                 throw new JettException("Provide a keyword (e.g. find book)");
             }
-            System.out.println(list.findString(keyword));
-            break;
+            return list.findString(keyword);
+        }
+
+        case BYE: {
+            return "Bye. Hope to see you again soon!";
         }
 
         case INVALID:
             // Fallthrough
+
         default:
             throw new JettException("""
                     This is not a valid command. Use one of the following:
