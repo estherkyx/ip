@@ -1,6 +1,7 @@
 package jett;
 
 import java.time.LocalDate;
+import java.util.Optional;
 
 /**
  * Represents a task with a deadline in the Jett application.
@@ -20,6 +21,16 @@ public class Deadline extends Task {
     public Deadline(String description, String by) {
         super(description);
         this.by = DateParser.parseDate(by);
+    }
+
+    @Override
+    public TaskKind kind() {
+        return TaskKind.DEADLINE;
+    }
+
+    @Override
+    public LocalDate sortDate() {
+        return by;
     }
 
     /**
