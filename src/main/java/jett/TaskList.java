@@ -120,7 +120,7 @@ public class TaskList {
         }
 
         if (count == 0) {
-            return "No matching tasks found.\n";
+            return "No matching tasks found.";
         }
 
         return sb.toString();

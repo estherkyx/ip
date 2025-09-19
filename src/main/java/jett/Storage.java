@@ -108,12 +108,9 @@ public class Storage {
         assert line != null : "parseLine: input must not be null";
 
         // Corrupted data (not in expected format)
-        if (line.charAt(0) != '[' || line.length() < 6) {
+        if (line == null || line.length() < 6 || line.charAt(0) != '[') {
             return null;
         }
-
-        char taskType = line.charAt(1); // T or D or E
-        boolean isMarked = line.contains("[X]");
 
         // Locate the second close brackets
         int firstClose = line.indexOf(']');
@@ -124,6 +121,9 @@ public class Storage {
         if (secondClose == -1) {
             return null;
         }
+
+        char taskType = line.charAt(1); // T or D or E
+        boolean isMarked = line.substring(0, secondClose + 1).contains("[X]");
 
         // Obtain the task description and timings (if any)
         String rest = line.substring(secondClose + 1).trim();
@@ -136,17 +136,21 @@ public class Storage {
             break;
         }
         case 'D': {
-            int open = rest.lastIndexOf('(');
-            int close = rest.lastIndexOf(')');
-            if (open == -1 || close == -1 || open > close) {
+            String[] deadlineParts = extractDescAndDates(rest);
+            if (deadlineParts == null) {
                 return null;
             }
-            String deadlineDesc = rest.substring(0, open).trim();
-            int byIndex = rest.indexOf("by: ");
+
+            String deadlineDesc = deadlineParts[0];
+            String datesInParentheses = deadlineParts[1];
+
+            String byMarker = "by:";
+            int byIndex = datesInParentheses.indexOf(byMarker);
             if (byIndex == -1) {
                 return null;
             }
-            String by = rest.substring(byIndex + 3, close).trim(); // "(by: 6pm)" -> "6pm"
+            String by = datesInParentheses.substring(byIndex + byMarker.length()).trim();
+
             try {
                 t = new Deadline(deadlineDesc, by);
             } catch (IllegalArgumentException e) {
@@ -155,23 +159,30 @@ public class Storage {
             break;
         }
         case 'E': {
-            int open = rest.lastIndexOf('(');
-            int close = rest.lastIndexOf(')');
-            if (open == -1 || close == -1 || open > close) {
+            String[] eventParts = extractDescAndDates(rest);
+
+            if (eventParts == null) {
                 return null;
             }
-            String eventDesc = rest.substring(0, open).trim();
-            int fromIndex = rest.indexOf("from: ");
+
+            String eventDesc = eventParts[0];
+            String datesInParentheses = eventParts[1];
+
+            String fromMarker = "from:";
+            int fromIndex = datesInParentheses.indexOf(fromMarker);
             if (fromIndex == -1) {
                 return null;
             }
-            String time = rest.substring(fromIndex + 5, close).trim(); // "from: 3pm to: 4pm" -> "3pm to: 4pm"
-            int toIndex = time.indexOf("to:");
+            String time = datesInParentheses.substring(fromIndex + fromMarker.length()).trim();
+
+            String toMarker = "to:";
+            int toIndex = time.indexOf(toMarker);
             if (toIndex == -1) {
                 return null;
             }
-            String from = time.substring(0, toIndex).trim(); // "3pm to: 4pm" -> "3pm"
-            String to = time.substring(toIndex + 3).trim(); // "3pm to: 4pm" -> "4pm"
+            String from = time.substring(0, toIndex).trim();
+            String to = time.substring(toIndex + toMarker.length()).trim();
+
             try {
                 t = new Event(eventDesc, from, to);
             } catch (IllegalArgumentException e) {
@@ -187,5 +198,17 @@ public class Storage {
             t.mark();
         }
         return t;
+    }
+
+    private static String[] extractDescAndDates(String rest) {
+        int open = rest.lastIndexOf('(');
+        int close = rest.lastIndexOf(')');
+        if (open == -1 || close == -1 || open > close) {
+            return null;
+        }
+
+        String description = rest.substring(0, open).trim();
+        String datesInParentheses = rest.substring(open + 1, close).trim();
+        return new String[] { description, datesInParentheses };
     }
 }

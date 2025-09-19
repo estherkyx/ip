@@ -2,8 +2,8 @@ package jett;
 
 /**
  * Handles all user-facing messages for the Jett application.
- * The {@code Ui} class is responsible for displaying greetings,
- * exit messages and error messages to the console.
+ * The {@code Ui} class is responsible for providing greetings,
+ * exit messages and error messages.
  */
 public class Ui {
 

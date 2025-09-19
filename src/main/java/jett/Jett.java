@@ -10,7 +10,7 @@ import java.util.Scanner;
  */
 public class Jett {
     private final Storage storage;
-    private TaskList list;
+    private final TaskList list;
     private final Ui ui;
 
     /**
@@ -22,15 +22,18 @@ public class Jett {
      */
     public Jett(String filePath) {
         assert filePath != null && !filePath.isBlank() : "Storage path must be non-empty";
-        ui = new Ui();
-        storage = new Storage(filePath);
+        this.ui = new Ui();
+        this.storage = new Storage(filePath);
+
+        TaskList tasklist;
         try {
-            list = new TaskList(storage.getData());
+            tasklist = new TaskList(storage.getData());
         } catch (JettException e) {
             System.out.println(ui.getError("Loading error. Starting with an empty list."));
-            list = new TaskList();
+            tasklist = new TaskList();
         }
-        assert list != null : "TaskList must be initialised";
+        assert tasklist != null : "TaskList must be initialised";
+        this.list = tasklist;
     }
 
     public String getGreeting() {
@@ -43,6 +46,7 @@ public class Jett {
         try {
             response = Parser.respondToUser(input, list);
             storage.saveNow(list);
+            return response;
         } catch (JettException e) {
             response = ui.getError(e.getMessage());
         } catch (Exception e) {

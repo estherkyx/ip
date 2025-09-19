@@ -9,7 +9,7 @@ import java.time.LocalDate;
  */
 public class Deadline extends Task {
 
-    protected LocalDate by;
+    private final LocalDate by;
 
     /**
      * Creates a new {@code Deadline} task with a description and a due date.
