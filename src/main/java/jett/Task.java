@@ -7,8 +7,8 @@ package jett;
  * such as {@link Todo}, {@link Deadline}, and {@link Event}.
  */
 public class Task {
-    protected String description;
-    protected boolean isDone;
+    private final String description;
+    private boolean isDone;
 
     /**
      * Creates a new {@code Task} with the given description.
@@ -47,7 +47,7 @@ public class Task {
     /**
      * Returns the description of this task.
      *
-     * @return the description as a {@code String{}}
+     * @return the description as a {@code String}
      */
     public String getDescription() {
         return this.description;

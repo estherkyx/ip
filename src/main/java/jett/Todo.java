@@ -18,7 +18,7 @@ public class Todo extends Task {
 
     /**
      * Returns a string representation of this to-do task.
-     * The format includes the task type and description
+     * The format includes the task type, status and description
      *
      * @return formatted string representation of the to-do
      */

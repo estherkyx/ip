@@ -25,6 +25,7 @@ public class DateParser {
      */
     public static LocalDate parseDate(String dateStr) {
         String s = dateStr.trim();
+
         DateTimeFormatter[] formats = {
             DateTimeFormatter.ISO_LOCAL_DATE, // 2025-09-14
             DateTimeFormatter.ofPattern("d/M/yyyy"), // 1/9/2025
