@@ -40,7 +40,7 @@ public class DateParser {
                 last = e;
             }
         }
-        throw new IllegalArgumentException("Invalid date: " + s, last);
+        throw new IllegalArgumentException("Invalid date.");
     }
 
     /**

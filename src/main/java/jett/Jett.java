@@ -1,7 +1,5 @@
 package jett;
 
-import java.util.Scanner;
-
 /**
  * Represents the main entry point of the Jett application.
  * This class initialises the core components (UI, storage, and task list),

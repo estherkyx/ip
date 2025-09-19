@@ -22,7 +22,7 @@ public class Main extends Application {
             AnchorPane ap = fxmlLoader.load();
             Scene scene = new Scene(ap);
             stage.setScene(scene);
-            fxmlLoader.<MainWindow>getController().setJett(jett);  // inject the Jett instance
+            fxmlLoader.<MainWindow>getController().setJett(jett); // inject the Jett instance
             stage.show();
         } catch (IOException e) {
             e.printStackTrace();
