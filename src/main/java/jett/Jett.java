@@ -21,6 +21,7 @@ public class Jett {
      * @param filePath Path to the data file where tasks are stored.
      */
     public Jett(String filePath) {
+        assert filePath != null && !filePath.isBlank() : "Storage path must be non-empty";
         ui = new Ui();
         storage = new Storage(filePath);
         try {
@@ -29,6 +30,7 @@ public class Jett {
             System.out.println(ui.getError("Loading error. Starting with an empty list."));
             list = new TaskList();
         }
+        assert list != null : "TaskList must be initialised";
     }
 
     public String getGreeting() {
@@ -36,14 +38,17 @@ public class Jett {
     }
 
     public String getResponse(String input) {
+        assert input != null : "input must not be null";
+        String response;
         try {
-            String response = Parser.respondToUser(input, list);
+            response = Parser.respondToUser(input, list);
             storage.saveNow(list);
-            return response;
         } catch (JettException e) {
-            return ui.getError(e.getMessage());
+            response = ui.getError(e.getMessage());
         } catch (Exception e) {
-            return ui.getError("Try again.");
+            response = ui.getError("Try again.");
         }
+        assert response != null && !response.isEmpty() : "response must be non-empty";
+        return response;
     }
 }
