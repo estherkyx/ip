@@ -50,6 +50,7 @@ public class TaskList {
      * @return the {@link Task} at the given index
      */
     public Task get(int index) {
+        assert index >= 0 && index < size() : "Index out of bounds";
         return tasks.get(index);
     }
 
@@ -59,6 +60,7 @@ public class TaskList {
      * @param t the {@link Task} to add
      */
     public void add(Task t) {
+        assert t != null : "Cannot add null task";
         tasks.add(t);
     }
 
@@ -69,6 +71,7 @@ public class TaskList {
      * @return the removed {@link Task}
      */
     public Task remove(int index) {
+        assert index >= 0 && index < size() : "Index out of bounds";
         return tasks.remove(index);
     }
 
