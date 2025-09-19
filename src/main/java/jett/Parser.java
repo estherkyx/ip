@@ -13,7 +13,9 @@ public class Parser {
 
         static Command from(String input) {
             // Isolate the command
+            assert input != null : "from(): input must not be null";
             String cmd = input.trim().split("\\s+", 2)[0].toLowerCase();
+            assert !cmd.isEmpty() : "from(): command keyword must not be empty";
             return switch (cmd) {
             case "list" -> LIST;
             case "mark" -> MARK;
@@ -40,12 +42,15 @@ public class Parser {
      *                       or contains an invalid command
      */
     public static String respondToUser(String userInput, TaskList list) throws JettException {
+        assert list != null : "list must not be null";
+
         // Blank user input
         if (userInput.isBlank()) {
             throw new JettException("What can I do for you?");
         }
 
         Command cmd = Command.from(userInput);
+        assert cmd != null : "Command.from must not return null";
 
         switch (cmd) {
         case LIST: // User input = "list"
@@ -53,17 +58,21 @@ public class Parser {
 
         case MARK: // User input = "mark"
             Task markedTask = list.get(getTaskNumber(userInput, "mark", list) - 1);
+            assert markedTask != null : "marked task should exist";
             markedTask.mark();
             return "Nice! I've marked this task as done:\n" + markedTask;
 
         case UNMARK: // User input = "unmark"
             Task unmarkedTask = list.get(getTaskNumber(userInput, "unmark", list) - 1);
+            assert unmarkedTask != null : "unmarked task should exist";
             unmarkedTask.unmark();
             return "OK, I've marked this task as not done yet:\n" + unmarkedTask;
 
         case DELETE: // User input = "delete"
+            int sizeBeforeDelete = list.size();
             int taskNumber = getTaskNumber(userInput, "delete", list);
             Task removedTask = list.remove(taskNumber - 1);
+            assert list.size() == sizeBeforeDelete - 1 : "size must decrease by 1 after deleting a task";
             return "Noted. I've removed this task:\n"
                     + removedTask
                     + "\nNow you have " + list.size() + (list.size() == 1 ? " task" : " tasks") + " in the list.";
@@ -76,8 +85,11 @@ public class Parser {
             if (todoDesc.isEmpty()) {
                 throw new JettException("Fill in the description of your todo (e.g. todo read book)");
             }
+            int sizeBeforeTodo = list.size();
             Task todoTask = new Todo(todoDesc);
+            assert todoTask != null : "new Todo must not be null";
             list.add(todoTask);
+            assert list.size() == sizeBeforeTodo + 1 : "size must increase by 1 after adding a task";
             return "Got it. I've added this task:\n"
                     + todoTask
                     + "\nNow you have " + list.size() + (list.size() == 1 ? " task" : " tasks") + " in the list.";
@@ -99,12 +111,16 @@ public class Parser {
                         "Fill in the description and time of your deadline (e.g. deadline do report /by Sep 6 2025)"
                 );
             }
+            int sizeBeforeDeadline = list.size();
             try {
                 Task deadlineTask = new Deadline(deadlineDesc, by);
+                assert deadlineTask != null : "new Deadline must not be null";
                 list.add(deadlineTask);
             } catch (IllegalArgumentException e) {
                 throw new JettException("Use valid date format, e.g. 2025-09-06, 6/9/2025, Sep 6 2025");
             }
+            assert list.size() == sizeBeforeDeadline + 1 : "size must increase by 1 after adding a task";
+            assert list.get(list.size() - 1) != null : "last added task must not be null";
             return "Got it. I've added this task:\n"
                     + list.get(list.size() - 1)
                     + "\nNow you have " + list.size() + (list.size() == 1 ? " task" : " tasks") + " in the list.";
@@ -131,12 +147,16 @@ public class Parser {
                         "Fill in the description, start and end date (e.g. event camp /from Sep 6 2025 /to Sep 7 2025)"
                 );
             }
+            int sizeBeforeEvent = list.size();
             try {
                 Task newTask = new Event(eventDesc, from, to);
+                assert newTask != null : "new Event must not be null";
                 list.add(newTask);
             } catch (IllegalArgumentException e) {
                 throw new JettException("Use valid date format, e.g. 2025-09-06, 6/9/2025, Sep 6 2025");
             }
+            assert list.size() == sizeBeforeEvent + 1 : "size must increase by 1 after add";
+            assert list.get(list.size() - 1) != null : "last added task must not be null";
             return "Got it. I've added this task:\n"
                     + list.get(list.size() - 1)
                     + "\nNow you have " + list.size() + (list.size() == 1 ? " task" : " tasks") + " in the list.";

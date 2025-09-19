@@ -1,5 +1,7 @@
 package jett;
 
+import java.util.Scanner;
+
 /**
  * Represents the main entry point of the Jett application.
  * This class initialises the core components (UI, storage, and task list),
@@ -19,6 +21,7 @@ public class Jett {
      * @param filePath Path to the data file where tasks are stored.
      */
     public Jett(String filePath) {
+        assert filePath != null && !filePath.isBlank() : "Storage path must be non-empty";
         this.ui = new Ui();
         this.storage = new Storage(filePath);
 
@@ -29,6 +32,7 @@ public class Jett {
             System.out.println(ui.getError("Loading error. Starting with an empty list."));
             tasklist = new TaskList();
         }
+        assert tasklist != null : "TaskList must be initialised";
         this.list = tasklist;
     }
 
@@ -37,14 +41,18 @@ public class Jett {
     }
 
     public String getResponse(String input) {
+        assert input != null : "input must not be null";
+        String response;
         try {
-            String response = Parser.respondToUser(input, list);
+            response = Parser.respondToUser(input, list);
             storage.saveNow(list);
             return response;
         } catch (JettException e) {
-            return ui.getError(e.getMessage());
+            response = ui.getError(e.getMessage());
         } catch (Exception e) {
-            return ui.getError("Try again.");
+            response = ui.getError("Try again.");
         }
+        assert response != null && !response.isEmpty() : "response must be non-empty";
+        return response;
     }
 }

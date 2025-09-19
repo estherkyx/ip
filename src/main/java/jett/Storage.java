@@ -20,6 +20,7 @@ public class Storage {
      * @param filePath path to the data file (e.g., {@code data/Jett.txt})
      */
     public Storage(String filePath) {
+        assert filePath != null && !filePath.isBlank() : "Storage path must be non-empty";
         this.filePath = filePath;
     }
 
@@ -31,20 +32,26 @@ public class Storage {
      * @param list the list of tasks to persist
      */
     public void saveNow(TaskList list) {
+        assert list != null : "Cannot save null TaskList";
         try {
             File file = new File(filePath);
             File parent = file.getParentFile();
             if (parent != null && !parent.exists()) {
+                assert !parent.isFile() : "Parent path exists as a file, cannot create directory";
                 parent.mkdirs();
+                assert parent.exists() && parent.isDirectory() : "Failed to create parent directory";
             }
 
             try (FileWriter fw = new FileWriter(filePath)) {
                 for (int i = 0; i < list.size(); i++) {
                     Task t = list.get(i);
+                    assert t != null : "TaskList must not contain null entries";
                     fw.write(t.toString());
                     fw.write(System.lineSeparator());
                 }
             }
+            assert file.exists() : "Data file should exist after save";
+            assert file.isFile() : "Data path should be a regular file after save";
         } catch (IOException e) {
             System.out.println("Something went wrong: " + e.getMessage());
         }
@@ -86,6 +93,7 @@ public class Storage {
                 scanner.close();
             }
         }
+        assert list != null : "getData must not return null";
         return list;
     }
 
@@ -97,6 +105,8 @@ public class Storage {
      * @return a {@link Task} instance, or {@code null} if unparseable
      */
     protected static Task parseLine(String line) {
+        assert line != null : "parseLine: input must not be null";
+
         // Corrupted data (not in expected format)
         if (line == null || line.length() < 6 || line.charAt(0) != '[') {
             return null;
@@ -117,6 +127,7 @@ public class Storage {
 
         // Obtain the task description and timings (if any)
         String rest = line.substring(secondClose + 1).trim();
+        assert !rest.startsWith("]") : "Text content should follow status brackets";
 
         Task t = null;
         switch (taskType) {
