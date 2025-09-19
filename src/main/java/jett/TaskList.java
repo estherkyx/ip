@@ -1,6 +1,9 @@
 package jett;
 
+import java.time.LocalDate;
 import java.util.ArrayList;
+import java.util.Comparator;
+import java.util.Locale;
 
 /**
  * Represents a collection of {@link Task} objects in the Jett application.
@@ -86,9 +89,9 @@ public class TaskList {
             return "Your list is empty.";
         }
         StringBuilder sb = new StringBuilder();
-        sb.append("Here are the tasks in your list: \n");
+        sb.append("Here are the tasks in your list:");
         for (int i = 0; i < tasks.size(); i++) {
-            sb.append((i + 1)).append(". ").append(tasks.get(i).toString()).append("\n");
+            sb.append("\n").append(i + 1).append(". ").append(tasks.get(i).toString());
         }
         return sb.toString();
     }
@@ -124,5 +127,85 @@ public class TaskList {
         }
 
         return sb.toString();
+    }
+
+    private static final Comparator<Task> alphabeticalOrder = (a, b) -> {
+        return a.getDescription().toLowerCase(Locale.ROOT)
+                .compareTo(b.getDescription().toLowerCase(Locale.ROOT));
+    };
+
+    private static final Comparator<Task> dateOrder = (a, b) -> {
+        boolean aTodo = (a.kind() == Task.TaskKind.TODO);
+        boolean bTodo = (b.kind() == Task.TaskKind.TODO);
+
+        // Place todos at the top
+        if (aTodo && !bTodo) {
+            return -1;
+        } else if (!aTodo && bTodo) {
+            return 1;
+        }
+
+        // If both tasks are todo, sort by description (alphabetically)
+        if (aTodo && bTodo) {
+            return alphabeticalOrder.compare(a, b);
+        }
+
+        // If dates are different, sort by earliest date
+        LocalDate aDate = a.sortDate();
+        LocalDate bDate = b.sortDate();
+        if (!aDate.isEqual(bDate)) {
+            return aDate.compareTo(bDate);
+        }
+
+        // If both tasks have the same date and are of a different kind, sort by Deadline, then Event
+        if (a.kind() != b.kind()) {
+            if (a.kind() == Task.TaskKind.DEADLINE && b.kind() == Task.TaskKind.EVENT) {
+                return -1;
+            } else {
+                return 1;
+            }
+        }
+
+        // If both tasks have the same date and are of the same kind, sort by description (alphabetically)
+        return alphabeticalOrder.compare(a, b);
+    };
+
+    private static int rank(Task.TaskKind k) {
+        return switch (k) {
+            case TODO -> 0;
+            case DEADLINE -> 1;
+            case EVENT -> 2;
+        };
+    }
+
+    private static final Comparator<Task> typeOrder =
+            Comparator.<Task>comparingInt(t -> rank(t.kind()))
+                    .thenComparing(alphabeticalOrder);
+
+    public String sortedList(Comparator<Task> order, String header) {
+        if (tasks.isEmpty()) {
+            return "Your list is empty.";
+        }
+        ArrayList<Task> view = new ArrayList<>(tasks);
+        view.sort(order);
+
+        StringBuilder sb = new StringBuilder();
+        sb.append(header);
+        for (int i = 0; i < view.size(); i++) {
+            sb.append("\n").append("- ").append(view.get(i).toString());
+        }
+        return sb.toString();
+    }
+
+    public String listSortedByAlphabetical() {
+        return sortedList(alphabeticalOrder, "Here are your tasks in alphabetical order:");
+    }
+
+    public String listSortedByDate() {
+        return sortedList(dateOrder, "Here are your tasks in date order:");
+    }
+
+    public String listSortedByType() {
+        return sortedList(typeOrder, "Here are your tasks by type:");
     }
 }

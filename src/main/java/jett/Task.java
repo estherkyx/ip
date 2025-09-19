@@ -1,5 +1,8 @@
 package jett;
 
+import java.time.LocalDate;
+import java.util.Optional;
+
 /**
  * Represents a generic task in the Jett application.
  * A {@code Task} has a textual description and a completion status,
@@ -9,6 +12,7 @@ package jett;
 public class Task {
     private final String description;
     private boolean isDone;
+    public enum TaskKind { TODO, DEADLINE, EVENT }
 
     /**
      * Creates a new {@code Task} with the given description.
@@ -53,6 +57,14 @@ public class Task {
         return this.description;
     }
 
+    public TaskKind kind() {
+        return null;
+    }
+
+    public LocalDate sortDate() {
+        return null;
+    }
+
     /**
      * Returns a string representation of this task,
      * showing its status icon and description.
@@ -63,5 +75,4 @@ public class Task {
     public String toString() {
         return "[" + this.getStatusIcon() + "] " + this.description;
     }
-
 }

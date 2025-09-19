@@ -1,6 +1,7 @@
 package jett;
 
 import java.time.LocalDate;
+import java.util.Optional;
 
 /**
  * Represents an event task in the Jett application.
@@ -23,6 +24,16 @@ public class Event extends Task {
         super(description);
         this.from = DateParser.parseDate(from);
         this.to = DateParser.parseDate(to);
+    }
+
+    @Override
+    public TaskKind kind() {
+        return TaskKind.EVENT;
+    }
+
+    @Override
+    public LocalDate sortDate() {
+        return from;
     }
 
     /**

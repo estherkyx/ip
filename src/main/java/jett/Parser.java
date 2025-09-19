@@ -54,7 +54,19 @@ public class Parser {
 
         switch (cmd) {
         case LIST: // User input = "list"
-            return list.listString();
+            String rest = userInput.substring(4).trim();
+            if (rest.isEmpty()) {
+                return list.listString();
+            } else if (rest.equalsIgnoreCase("/alphabetical")) {
+                return list.listSortedByAlphabetical();
+            } else if (rest.equalsIgnoreCase("/date")) {
+                return list.listSortedByDate();
+            } else if (rest.equalsIgnoreCase("/type")) {
+                return list.listSortedByType();
+            } else {
+                throw new JettException(
+                        "Unknown modifier for 'list'. Use 'list', 'list /alphabetical', 'list /date' or 'list /type'.");
+            }
 
         case MARK: // User input = "mark"
             Task markedTask = list.get(getTaskNumber(userInput, "mark", list) - 1);
@@ -182,7 +194,7 @@ public class Parser {
         default:
             throw new JettException("""
                     This is not a valid command. Use one of the following:
-                    1. list
+                    1. list /<filter> (alphabetical / date / type)
                     2. todo <description>
                     3. deadline <description> /by <date>
                     4. event <description> /from <start date> /to <end date>
