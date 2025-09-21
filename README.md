@@ -199,7 +199,7 @@ Advanced users may edit `Jett.txt` directly to change saved tasks.
 | **Todo** | `todo DESCRIPTION`<br>e.g. `todo read book` |
 | **Deadline** | `deadline DESCRIPTION /by DATE`<br>e.g. `deadline finish report /by Sep 30 2025` |
 | **Event** | `event DESCRIPTION /from DATE /to DATE`<br>e.g. `event camp /from Sep 6 2025 /to Sep 7 2025` |
-| **List** | `list [/alphabetical | /date | /type]` |
+| **List** | `list [/alphabetical or /date or /type]`<br>e.g. `list /type` |
 | **Mark** | `mark INDEX`<br>e.g. `mark 2` |
 | **Unmark** | `unmark INDEX`<br>e.g. `unmark 2` |
 | **Delete** | `delete INDEX`<br>e.g. `delete 3` |
