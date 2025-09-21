@@ -9,7 +9,7 @@
 
 1. Ensure you have **Java 17** or above installed on your computer.  
    - Mac users: ensure you have the precise JDK version prescribed [here](https://www.jetbrains.com/help/idea/sdk.html#set-up-jdk).  
-2. Download the latest **`.jar` file** of Jett from [here](https://github.com).  
+2. Download the latest **`.jar` file** of Jett [here](https://github.com/estherkyx/ip/releases/download/A-Release/jett.jar).  
 3. Place the file in a folder you want to use as the home folder for Jett.  
 4. Open a command terminal, `cd` into the folder, and run:  
 
