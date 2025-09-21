@@ -4,41 +4,54 @@
 <?import javafx.scene.control.ScrollPane?>
 <?import javafx.scene.control.TextField?>
 <?import javafx.scene.layout.AnchorPane?>
+<?import javafx.scene.layout.HBox?>
 <?import javafx.scene.layout.VBox?>
 
-<AnchorPane maxHeight="-Infinity" maxWidth="-Infinity"
-            minHeight="-Infinity" minWidth="-Infinity"
-            prefHeight="600.0" prefWidth="400.0"
-            xmlns="http://javafx.com/javafx/17"
+<AnchorPane xmlns="http://javafx.com/javafx/17"
             xmlns:fx="http://javafx.com/fxml/1"
-            fx:controller="jett.MainWindow">
+            fx:controller="jett.MainWindow"
+            prefWidth="400.0" prefHeight="600.0"
+            stylesheets="@styles.css">
+
+
     <children>
-        <TextField fx:id="userInput"
-                   layoutY="558.0"
-                   onAction="#handleUserInput"
-                   prefHeight="41.0"
-                   prefWidth="324.0"
-                   AnchorPane.bottomAnchor="1.0" />
-        <Button fx:id="sendButton"
-                layoutX="324.0"
-                layoutY="558.0"
-                mnemonicParsing="false"
-                onAction="#handleUserInput"
-                prefHeight="41.0"
-                prefWidth="76.0"
-                text="Send" />
+
+        <!-- Messages area -->
         <ScrollPane fx:id="scrollPane"
                     hbarPolicy="NEVER"
-                    hvalue="1.0"
-                    prefHeight="557.0"
-                    prefWidth="400.0"
-                    vvalue="1.0">
+                    fitToWidth="true"
+                    AnchorPane.topAnchor="0.0"
+                    AnchorPane.leftAnchor="0.0"
+                    AnchorPane.rightAnchor="0.0"
+                    AnchorPane.bottomAnchor="52.0">
             <content>
+                <!-- Dialog container: compact spacing & padding for readability -->
                 <VBox fx:id="dialogContainer"
-                      prefHeight="552.0"
-                      prefWidth="388.0" />
+                      spacing="8.0"
+                      style="-fx-padding: 10;">
+                </VBox>
             </content>
         </ScrollPane>
+
+        <!-- Input bar pinned to bottom -->
+        <HBox spacing="8.0"
+              AnchorPane.leftAnchor="0.0"
+              AnchorPane.rightAnchor="0.0"
+              AnchorPane.bottomAnchor="0.0"
+              style="-fx-padding: 8;">
+            <children>
+                <TextField fx:id="userInput"
+                           promptText="Type a command…"
+                           onAction="#handleUserInput"
+                           HBox.hgrow="ALWAYS"
+                           style="-fx-font-size: 11pt; -fx-pref-height: 40px;"/>
+                <Button fx:id="sendButton"
+                        text="Send"
+                        defaultButton="true"
+                        onAction="#handleUserInput"
+                        style="-fx-font-size: 11pt; -fx-pref-height: 40px; -fx-pref-width: 90px;"/>
+            </children>
+        </HBox>
+
     </children>
 </AnchorPane>
-

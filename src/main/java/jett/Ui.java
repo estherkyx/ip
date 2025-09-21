@@ -34,6 +34,6 @@ public class Ui {
      * @return the string for the error message
      */
     public String getError(String msg) {
-        return Objects.requireNonNull(msg, "msg");
+        return "ERROR: " + Objects.requireNonNull(msg, "msg");
     }
 }

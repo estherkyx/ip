@@ -26,28 +26,29 @@ public class MainWindow extends AnchorPane {
 
     private Jett jett;
 
-    private Image userImage = new Image(this.getClass().getResourceAsStream("/images/User.png"));
-    private Image jettImage = new Image(this.getClass().getResourceAsStream("/images/Jett.png"));
+    private final Image userImage = new Image(this.getClass().getResourceAsStream("/images/User.png"));
+    private final Image jettImage = new Image(this.getClass().getResourceAsStream("/images/Jett.png"));
 
     /**
      * Initialises the controller after FXML loading.
      * <p>
-     * Binds the scroll pane to always follow the height of the dialog container,
-     * ensuring that new messages auto-scroll into view.
+     * Enables fit-to-width and auto-scroll so long replies wrap nicely
+     * and new messages are always visible.
      * </p>
      */
     @FXML
     public void initialize() {
-        scrollPane.vvalueProperty().bind(dialogContainer.heightProperty());
+        // Make content width match the viewport (helps wrapping + resizing)
+        scrollPane.setFitToWidth(true);
+        dialogContainer.setFillWidth(true);
+
+        // Auto-scroll to bottom on new messages
+        dialogContainer.heightProperty().addListener((obs, oldVal, newVal) -> scrollPane.setVvalue(1.0));
     }
 
     /**
      * Injects the core {@link Jett} instance into this controller.
-     * <p>
-     * Also displays the greeting message from Jett as the first dialog in the container.
-     * </p>
-     *
-     * @param d the {@code Jett} instance backing this UI
+     * Also displays the greeting message from Jett as the first dialog.
      */
     public void setJett(Jett d) {
         jett = d;
@@ -55,20 +56,35 @@ public class MainWindow extends AnchorPane {
     }
 
     /**
-     * Creates two dialog boxes, one echoing user input and the other containing Jett's reply and then appends them to
-     * the dialog container. Clears the user input after processing.
+     * Echoes user input and appends Jett's reply to the container.
+     * Errors are highlighted in a distinct bubble to catch attention.
      */
     @FXML
     private void handleUserInput() {
         String input = userInput.getText();
-        String response = jett.getResponse(input);
-        dialogContainer.getChildren().addAll(
-                DialogBox.getUserDialog(input, userImage),
-                DialogBox.getJettDialog(response, jettImage)
+        if (input == null || input.trim().isEmpty()) {
+            return; // ignore blank submits
+        }
+        String trimmed = input.trim();
+
+        // User bubble
+        dialogContainer.getChildren().add(DialogBox.getUserDialog(trimmed, userImage));
+
+        // Jett reply
+        String response = jett.getResponse(trimmed);
+        boolean isError = response != null && response.startsWith("ERROR: ");
+        String display = isError ? response.substring("ERROR: ".length()) : response;
+
+        dialogContainer.getChildren().add(
+                isError
+                        ? DialogBox.getErrorDialog(display, jettImage)
+                        : DialogBox.getJettDialog(display, jettImage)
         );
+
         userInput.clear();
 
-        if (input.equalsIgnoreCase("bye")) {
+        // Graceful quit on "bye"
+        if (trimmed.equalsIgnoreCase("bye")) {
             userInput.setDisable(true);
             sendButton.setDisable(true);
 

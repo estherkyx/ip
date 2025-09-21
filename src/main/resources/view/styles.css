@@ -1,0 +1,38 @@
+/* Base dialog container */
+.dialog {
+    -fx-padding: 0 8 0 8;
+}
+
+/* Bubble baseline */
+.bubble {
+    -fx-background-radius: 12;
+    -fx-padding: 8 12 8 12;
+    -fx-font-size: 11pt;
+    -fx-line-spacing: 2px;
+}
+
+/* User bubble: right side, light blue */
+.dialog-user .bubble {
+    -fx-background-color: #e7f0ff;
+    -fx-text-fill: #0b2a4a;
+}
+
+/* Bot bubble: left side, neutral grey */
+.dialog-bot .bubble {
+    -fx-background-color: #f2f3f5;
+    -fx-text-fill: #202020;
+}
+
+/* Error bubble: left side, red-accented */
+.dialog-error .bubble {
+    -fx-background-color: #ffecec;
+    -fx-text-fill: #7a0000;
+    -fx-border-color: #ff5a5a;
+    -fx-border-width: 0 0 0 4;
+    -fx-border-radius: 10;
+    -fx-padding: 8 12 8 10; /* space for the red stripe */
+}
+
+/* Keep scroll pane background transparent */
+.scroll-pane > .viewport { -fx-background-color: transparent; }
+.scroll-pane              { -fx-background-color: transparent; }

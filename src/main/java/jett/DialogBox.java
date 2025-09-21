@@ -13,6 +13,7 @@ import javafx.scene.control.Label;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import javafx.scene.layout.HBox;
+import javafx.scene.shape.Circle;
 
 /**
  * Represents a dialog box consisting of an ImageView to represent the speaker's face
@@ -35,7 +36,21 @@ public class DialogBox extends HBox {
         }
 
         dialog.setText(text);
+        // Readability + responsive wrapping
+        dialog.setWrapText(true);
+        dialog.setMaxWidth(420); // keeps long replies readable; lets window resize gracefully
+        // Give the bubble a style hook (CSS: .bubble)
+        dialog.getStyleClass().add("bubble");
+
+        // Space-efficient avatar + circular crop
         displayPicture.setImage(img);
+        displayPicture.setFitWidth(60);
+        displayPicture.setFitHeight(60);
+        displayPicture.setPreserveRatio(true);
+        displayPicture.setClip(new Circle(30, 30, 30));
+
+        // Base dialog style hook (CSS: .dialog)
+        getStyleClass().add("dialog");
     }
 
     /**
@@ -50,32 +65,37 @@ public class DialogBox extends HBox {
 
     /**
      * Creates a {@code DialogBox} for user input.
-     * <p>
      * The text bubble appears on the left, and the user image on the right.
-     * </p>
-     *
-     * @param text the user message text
-     * @param img the user display picture
-     * @return a new {@code DialogBox} representing a user message
      */
     public static DialogBox getUserDialog(String text, Image img) {
-        return new DialogBox(text, img);
+        DialogBox db = new DialogBox(text, img);
+        // Asymmetric styling hook (CSS: .dialog-user)
+        db.getStyleClass().add("dialog-user");
+        db.setAlignment(Pos.TOP_RIGHT); // align the whole box to the right side track
+        return db;
     }
 
     /**
      * Creates a {@code DialogBox} for Jett's responses.
-     * <p>
      * The dialog box is flipped such that the application image is on the left
      * and the response text on the right.
-     * </p>
-     *
-     * @param text the response message text
-     * @param img the Jett display picture
-     * @return a new {@code DialogBox} representing Jett's response
      */
     public static DialogBox getJettDialog(String text, Image img) {
         var db = new DialogBox(text, img);
         db.flip();
+        // Asymmetric styling hook (CSS: .dialog-bot)
+        db.getStyleClass().add("dialog-bot");
+        return db;
+    }
+
+    /**
+     * Creates a {@code DialogBox} for error responses from Jett (highlighted).
+     * Same layout as Jett's responses, but with an additional error style.
+     */
+    public static DialogBox getErrorDialog(String text, Image img) {
+        var db = new DialogBox(text, img);
+        db.flip();
+        db.getStyleClass().addAll("dialog-bot", "dialog-error");
         return db;
     }
 }
