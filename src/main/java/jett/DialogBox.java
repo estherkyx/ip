@@ -48,10 +48,31 @@ public class DialogBox extends HBox {
         setAlignment(Pos.TOP_LEFT);
     }
 
+    /**
+     * Creates a {@code DialogBox} for user input.
+     * <p>
+     * The text bubble appears on the left, and the user image on the right.
+     * </p>
+     *
+     * @param text the user message text
+     * @param img the user display picture
+     * @return a new {@code DialogBox} representing a user message
+     */
     public static DialogBox getUserDialog(String text, Image img) {
         return new DialogBox(text, img);
     }
 
+    /**
+     * Creates a {@code DialogBox} for Jett's responses.
+     * <p>
+     * The dialog box is flipped such that the application image is on the left
+     * and the response text on the right.
+     * </p>
+     *
+     * @param text the response message text
+     * @param img the Jett display picture
+     * @return a new {@code DialogBox} representing Jett's response
+     */
     public static DialogBox getJettDialog(String text, Image img) {
         var db = new DialogBox(text, img);
         db.flip();

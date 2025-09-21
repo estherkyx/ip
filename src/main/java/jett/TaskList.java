@@ -10,6 +10,60 @@ import java.util.Locale;
  * Provides methods to add, remove, retrieve, and display tasks.
  */
 public class TaskList {
+
+    private static final Comparator<Task> alphabeticalOrder = (a, b) -> {
+        return a.getDescription().toLowerCase(Locale.ROOT)
+                .compareTo(b.getDescription().toLowerCase(Locale.ROOT));
+    };
+
+    private static final Comparator<Task> dateOrder = (a, b) -> {
+        boolean aTodo = (a.kind() == Task.TaskKind.TODO);
+        boolean bTodo = (b.kind() == Task.TaskKind.TODO);
+
+        // Place todos at the top
+        if (aTodo && !bTodo) {
+            return -1;
+        } else if (!aTodo && bTodo) {
+            return 1;
+        }
+
+        // If both tasks are todo, sort by description (alphabetically)
+        if (aTodo && bTodo) {
+            return alphabeticalOrder.compare(a, b);
+        }
+
+        // If dates are different, sort by earliest date
+        LocalDate aDate = a.sortDate();
+        LocalDate bDate = b.sortDate();
+        if (!aDate.isEqual(bDate)) {
+            return aDate.compareTo(bDate);
+        }
+
+        // If both tasks have the same date and are of a different kind, sort by Deadline, then Event
+        if (a.kind() != b.kind()) {
+            if (a.kind() == Task.TaskKind.DEADLINE && b.kind() == Task.TaskKind.EVENT) {
+                return -1;
+            } else {
+                return 1;
+            }
+        }
+
+        // If both tasks have the same date and are of the same kind, sort by description (alphabetically)
+        return alphabeticalOrder.compare(a, b);
+    };
+
+    private static int rank(Task.TaskKind k) {
+        return switch (k) {
+            case TODO -> 0;
+            case DEADLINE -> 1;
+            case EVENT -> 2;
+        };
+    }
+
+    private static final Comparator<Task> typeOrder =
+            Comparator.<Task>comparingInt(t -> rank(t.kind()))
+                    .thenComparing(alphabeticalOrder);
+
     private final ArrayList<Task> tasks;
 
     /**
@@ -129,59 +183,19 @@ public class TaskList {
         return sb.toString();
     }
 
-    private static final Comparator<Task> alphabeticalOrder = (a, b) -> {
-        return a.getDescription().toLowerCase(Locale.ROOT)
-                .compareTo(b.getDescription().toLowerCase(Locale.ROOT));
-    };
-
-    private static final Comparator<Task> dateOrder = (a, b) -> {
-        boolean aTodo = (a.kind() == Task.TaskKind.TODO);
-        boolean bTodo = (b.kind() == Task.TaskKind.TODO);
-
-        // Place todos at the top
-        if (aTodo && !bTodo) {
-            return -1;
-        } else if (!aTodo && bTodo) {
-            return 1;
-        }
-
-        // If both tasks are todo, sort by description (alphabetically)
-        if (aTodo && bTodo) {
-            return alphabeticalOrder.compare(a, b);
-        }
-
-        // If dates are different, sort by earliest date
-        LocalDate aDate = a.sortDate();
-        LocalDate bDate = b.sortDate();
-        if (!aDate.isEqual(bDate)) {
-            return aDate.compareTo(bDate);
-        }
-
-        // If both tasks have the same date and are of a different kind, sort by Deadline, then Event
-        if (a.kind() != b.kind()) {
-            if (a.kind() == Task.TaskKind.DEADLINE && b.kind() == Task.TaskKind.EVENT) {
-                return -1;
-            } else {
-                return 1;
-            }
-        }
-
-        // If both tasks have the same date and are of the same kind, sort by description (alphabetically)
-        return alphabeticalOrder.compare(a, b);
-    };
-
-    private static int rank(Task.TaskKind k) {
-        return switch (k) {
-            case TODO -> 0;
-            case DEADLINE -> 1;
-            case EVENT -> 2;
-        };
-    }
-
-    private static final Comparator<Task> typeOrder =
-            Comparator.<Task>comparingInt(t -> rank(t.kind()))
-                    .thenComparing(alphabeticalOrder);
-
+    /**
+     * Produces a read-only, formatted view of the tasks sorted by the provided comparator.
+     * <p>
+     * The underlying list is not modified and sorting is applied to a copy of the list.
+     * Each line is prefixed with a hyphen (no numbering) to avoid index confusion with the unsorted list.
+     * </p>
+     *
+     * @param order  the {@link Comparator} used to sort a copied view of the tasks
+     * @param header the header line to prepend to the listing
+     * @return a formatted, hyphen-bulleted listing of the sorted view, or
+     *         {@code "Your list is empty."} if there are no tasks
+     * @throws NullPointerException if {@code order} or {@code header} is {@code null}
+     */
     public String sortedList(Comparator<Task> order, String header) {
         if (tasks.isEmpty()) {
             return "Your list is empty.";
@@ -197,14 +211,36 @@ public class TaskList {
         return sb.toString();
     }
 
+    /**
+     * Returns a formatted listing of tasks sorted alphabetically by description (case-insensitive).
+     *
+     * @return a formatted, hyphen-bulleted alphabetical listing, or an empty-list message
+     */
     public String listSortedByAlphabetical() {
         return sortedList(alphabeticalOrder, "Here are your tasks in alphabetical order:");
     }
 
+    /**
+     * Returns a formatted listing of tasks sorted by date with the following rules:
+     * <ol>
+     *   <li>Todos appear before non-Todos.</li>
+     *   <li>Among dated tasks, earlier dates come first.</li>
+     *   <li>If dates are equal and task kinds differ, Deadlines precede Events.</li>
+     *   <li>If dates and task kinds are the same, sort alphabetically by description.</li>
+     * </ol>
+     *
+     * @return a formatted, hyphen-bulleted date-ordered listing, or an empty-list message
+     */
     public String listSortedByDate() {
         return sortedList(dateOrder, "Here are your tasks in date order:");
     }
 
+    /**
+     * Returns a formatted listing of tasks grouped by type in the order:
+     * Todo, Deadline, Event. Within each type, tasks are sorted alphabetically.
+     *
+     * @return a formatted, hyphen-bulleted type-ordered listing, or an empty-list message
+     */
     public String listSortedByType() {
         return sortedList(typeOrder, "Here are your tasks by type:");
     }

@@ -1,7 +1,6 @@
 package jett;
 
 import java.time.LocalDate;
-import java.util.Optional;
 
 /**
  * Represents a generic task in the Jett application.
@@ -12,6 +11,10 @@ import java.util.Optional;
 public class Task {
     private final String description;
     private boolean isDone;
+
+    /**
+     * Enumeration of the supported task kinds.
+     */
     public enum TaskKind { TODO, DEADLINE, EVENT }
 
     /**
@@ -57,10 +60,31 @@ public class Task {
         return this.description;
     }
 
+    /**
+     * Identifies the kind of this task.
+     * <p>
+     * Subclasses override this to return their specific {@link TaskKind}.
+     * </p>
+     *
+     * @return the task kind, or {@code null} if not implemented
+     */
     public TaskKind kind() {
         return null;
     }
 
+    /**
+     * Returns the date value used when sorting tasks.
+     * <p>
+     * Subclasses override this to provide a meaningful {@link LocalDate}:
+     * <ul>
+     *   <li>{@link Todo} will not override and thus have no date.</li>
+     *   <li>{@link Deadline} returns its due date,</li>
+     *   <li>{@link Event} returns its start date,</li>
+     * </ul>
+     * </p>
+     *
+     * @return the sort date, or {@code null} if the task has no associated date
+     */
     public LocalDate sortDate() {
         return null;
     }

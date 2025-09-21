@@ -15,6 +15,15 @@ public class Main extends Application {
 
     private Jett jett = new Jett("data/Jett.txt");
 
+    /**
+     * Initialises and displays the primary JavaFX stage.
+     * <p>
+     * Loads the UI layout from {@code /view/MainWindow.fxml}, wraps it in a
+     * {@link Scene}, and injects the {@link Jett} instance into the controller.
+     * </p>
+     *
+     * @param stage the primary JavaFX stage provided by the runtime
+     */
     @Override
     public void start(Stage stage) {
         try {

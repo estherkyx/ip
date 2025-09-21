@@ -16,6 +16,11 @@ public class Todo extends Task {
         super(description);
     }
 
+    /**
+     * Identifies this task as a {@link TaskKind#TODO}.
+     *
+     * @return {@link TaskKind#TODO}
+     */
     @Override
     public TaskKind kind() {
         return TaskKind.TODO;

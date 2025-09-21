@@ -34,10 +34,29 @@ public class Jett {
         this.list = tasklist;
     }
 
+    /**
+     * Returns the application greeting text shown at startup.
+     *
+     * @return a greeting message produced by the UI component
+     */
     public String getGreeting() {
         return ui.getGreeting();
     }
 
+    /**
+     * Processes a single line of user input and returns a response string suitable for display.
+     * <p>
+     * This method delegates to {@link Parser} to interpret the command and may
+     * <em>mutate</em> the internal {@link TaskList}. On successful command execution,
+     * the updated task list is immediately persisted via {@link Storage#saveNow(TaskList)}.
+     * If a {@link JettException} occurs, its message is rendered through the UI error formatter.
+     * Any other unexpected exception is caught and rendered as a generic error.
+     * </p>
+     *
+     * @param input a non-{@code null} line of user input
+     * @return the UI-rendered response string (never {@code null} or empty on return)
+     * @throws AssertionError if {@code input} is {@code null} (when assertions are enabled)
+     */
     public String getResponse(String input) {
         assert input != null : "input must not be null";
         String response;

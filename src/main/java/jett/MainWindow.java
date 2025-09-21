@@ -29,12 +29,26 @@ public class MainWindow extends AnchorPane {
     private Image userImage = new Image(this.getClass().getResourceAsStream("/images/User.png"));
     private Image jettImage = new Image(this.getClass().getResourceAsStream("/images/Jett.png"));
 
+    /**
+     * Initialises the controller after FXML loading.
+     * <p>
+     * Binds the scroll pane to always follow the height of the dialog container,
+     * ensuring that new messages auto-scroll into view.
+     * </p>
+     */
     @FXML
     public void initialize() {
         scrollPane.vvalueProperty().bind(dialogContainer.heightProperty());
     }
 
-    /** Injects the Jett instance */
+    /**
+     * Injects the core {@link Jett} instance into this controller.
+     * <p>
+     * Also displays the greeting message from Jett as the first dialog in the container.
+     * </p>
+     *
+     * @param d the {@code Jett} instance backing this UI
+     */
     public void setJett(Jett d) {
         jett = d;
         dialogContainer.getChildren().add(DialogBox.getJettDialog(jett.getGreeting(), jettImage));

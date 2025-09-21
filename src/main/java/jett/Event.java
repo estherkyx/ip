@@ -1,7 +1,6 @@
 package jett;
 
 import java.time.LocalDate;
-import java.util.Optional;
 
 /**
  * Represents an event task in the Jett application.
@@ -26,11 +25,24 @@ public class Event extends Task {
         this.to = DateParser.parseDate(to);
     }
 
+    /**
+     * Identifies this task as a {@link TaskKind#EVENT}.
+     *
+     * @return {@link TaskKind#EVENT}
+     */
     @Override
     public TaskKind kind() {
         return TaskKind.EVENT;
     }
 
+    /**
+     * Returns the start date of this event.
+     * <p>
+     * This is used as the event’s chronological sort key.
+     * </p>
+     *
+     * @return the {@link LocalDate} marking the start of the event
+     */
     @Override
     public LocalDate sortDate() {
         return from;
