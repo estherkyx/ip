@@ -3,12 +3,28 @@ package jett;
 import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
 import java.time.format.DateTimeParseException;
+import java.util.Locale;
+import java.util.Objects;
 
 /**
  * Utility class for parsing and formatting dates used in the Jett application.
  * Provides support for multiple input formats and a consistent output format.
  */
-public class DateParser {
+public final class DateParser {
+
+    private static final DateTimeFormatter ISO = DateTimeFormatter.ISO_LOCAL_DATE;
+    private static final DateTimeFormatter SLASH = DateTimeFormatter.ofPattern("d/M/yyyy");
+    private static final DateTimeFormatter MONTH_TEXT =
+            DateTimeFormatter.ofPattern("MMM d yyyy", Locale.ENGLISH);
+    private static final DateTimeFormatter OUTPUT =
+            DateTimeFormatter.ofPattern("MMM d yyyy", Locale.ENGLISH);
+
+    /** Supported input formats, tried in order. */
+    private static final DateTimeFormatter[] INPUT_FORMATS = {ISO, SLASH, MONTH_TEXT};
+
+    private DateParser() {
+        // utility class; prevent instantiation
+    }
 
     /**
      * Attempts to parse a date string into a {@link LocalDate}.
@@ -21,36 +37,35 @@ public class DateParser {
      *
      * @param dateStr the input string representing a date
      * @return the parsed {@link LocalDate} object
-     * @throws IllegalArgumentException if the string cannot be parsed
+     * @throws IllegalArgumentException if the string is blank or cannot be parsed
      */
     public static LocalDate parseDate(String dateStr) {
+        Objects.requireNonNull(dateStr, "dateStr");
         String s = dateStr.trim();
+        if (s.isEmpty()) {
+            throw new IllegalArgumentException("Date string must not be blank.");
+        }
 
-        DateTimeFormatter[] formats = {
-            DateTimeFormatter.ISO_LOCAL_DATE, // 2025-09-14
-            DateTimeFormatter.ofPattern("d/M/yyyy"), // 1/9/2025
-            DateTimeFormatter.ofPattern("MMM d yyyy") // Sep 1 2025
-        };
-
-        DateTimeParseException last = null;
-        for (DateTimeFormatter format : formats) {
+        for (DateTimeFormatter fmt : INPUT_FORMATS) {
             try {
-                return LocalDate.parse(s, format);
-            } catch (DateTimeParseException e) {
-                last = e;
+                return LocalDate.parse(s, fmt);
+            } catch (DateTimeParseException ignored) {
+                // try next format
             }
         }
-        throw new IllegalArgumentException("Invalid date.");
+        throw new IllegalArgumentException("Unrecognized date format: \"" + dateStr + "\"");
     }
 
     /**
      * Formats a {@link LocalDate} into a human-readable string
-     * using the pattern {@code "MMM d yyyy"} (e.g. {@code Sep 14 2025"}).
+     * using the pattern {@code "MMM d yyyy"} (e.g. {@code Sep 14 2025}).
      *
      * @param date the {@link LocalDate} to format
      * @return the formatted date string
+     * @throws NullPointerException if {@code date} is null
      */
     public static String formatDate(LocalDate date) {
-        return date.format(DateTimeFormatter.ofPattern("MMM d yyyy"));
+        Objects.requireNonNull(date, "date");
+        return date.format(OUTPUT);
     }
 }

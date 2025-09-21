@@ -1,6 +1,7 @@
 package jett;
 
 import java.time.LocalDate;
+import java.util.Optional;
 
 /**
  * Represents a task with a deadline in the Jett application.
@@ -34,15 +35,20 @@ public class Deadline extends Task {
 
     /**
      * Returns the due date of this deadline task.
-     * <p>
-     * This is used when sorting tasks chronologically.
-     * </p>
      *
      * @return the {@link LocalDate} by which this task must be completed
      */
-    @Override
-    public LocalDate sortDate() {
+    public LocalDate getBy() {
         return by;
+    }
+
+    /**
+     * {@inheritDoc}
+     * For deadlines, this is always present and equals the due date.
+     */
+    @Override
+    public Optional<LocalDate> sortDate() {
+        return Optional.of(by);
     }
 
     /**

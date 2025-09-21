@@ -1,6 +1,7 @@
 package jett;
 
 import java.time.LocalDate;
+import java.util.Optional;
 
 /**
  * Represents an event task in the Jett application.
@@ -18,11 +19,15 @@ public class Event extends Task {
      * @param description the description of the event
      * @param from the start date string, parsed into a {@link LocalDate}
      * @param to the end date string, parsed into a {@link LocalDate}
+     * @throws IllegalArgumentException if {@code to} is before {@code from}
      */
     public Event(String description, String from, String to) {
         super(description);
         this.from = DateParser.parseDate(from);
         this.to = DateParser.parseDate(to);
+        if (this.to.isBefore(this.from)) {
+            throw new IllegalArgumentException("event end date cannot be before start date");
+        }
     }
 
     /**
@@ -35,17 +40,23 @@ public class Event extends Task {
         return TaskKind.EVENT;
     }
 
+    /** Returns the start date of this event. */
+    public LocalDate getFrom() {
+        return from;
+    }
+
+    /** Returns the end date of this event. */
+    public LocalDate getTo() {
+        return to;
+    }
+
     /**
-     * Returns the start date of this event.
-     * <p>
-     * This is used as the event’s chronological sort key.
-     * </p>
-     *
-     * @return the {@link LocalDate} marking the start of the event
+     * {@inheritDoc}
+     * For events, this is the start date.
      */
     @Override
-    public LocalDate sortDate() {
-        return from;
+    public Optional<LocalDate> sortDate() {
+        return Optional.of(from);
     }
 
     /**

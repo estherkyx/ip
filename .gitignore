@@ -18,3 +18,4 @@ text-ui-test/EXPECTED-UNIX.TXT
 **/data/Jett.txt
 *.class
 *.jar
+/data/test-jett.txt
