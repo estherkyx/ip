@@ -9,7 +9,7 @@
 
 1. Ensure you have **Java 17** or above installed on your computer.
     - Mac users: ensure you have the precise JDK version prescribed [here](https://www.jetbrains.com/help/idea/sdk.html#set-up-jdk).
-2. Download the latest **`.jar` file** of Jett from [here](https://github.com).
+2. Download the latest **`.jar` file** of Jett from [here](https://github.com/estherkyx/ip/).
 3. Place the file in a folder you want to use as the home folder for Jett.
 4. Open a command terminal, `cd` into the folder, and run:
 
@@ -34,7 +34,7 @@ Refer to [Features](#features) below for details of each command.
 
 ## Features
 
-:information_source: **Notes about the command format:**
+**Notes about the command format:**
 - Words in **UPPER_CASE** are parameters to be supplied by you.  
   Example: in `todo DESCRIPTION`, `DESCRIPTION` is a parameter which can be used as `todo read book`.
 - Items in **square brackets** are optional.  
@@ -182,7 +182,7 @@ bye
 ## Editing the data file
 Advanced users may edit `Jett.txt` directly to change saved tasks.
 
-:exclamation: **Caution:** If you make formatting errors, Jett may fail to load the file and will start with an empty task list. Always back up before editing manually.
+**Caution:** If you make formatting errors, Jett may fail to load the file and will start with an empty task list. Always back up before editing manually.
 
 ---
 
