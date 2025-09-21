@@ -2,8 +2,9 @@
 
 **Jett** is a desktop chatbot app that helps you manage your tasks. It is optimised for fast typing with a Command Line Interface (CLI), while still giving you the convenience of a Graphical User Interface (GUI). If you prefer keyboard commands but still want a clean interface, Jett is built for you.
 
----
+![Jett UI Screenshot](docs/Ui.png)
 
+---
 ## Quick start  
 
 1. Ensure you have **Java 17** or above installed on your computer.  
