@@ -25,7 +25,7 @@ class ParserTest {
     void todo_addsTask_andListCounts() throws Exception {
         String msg = Parser.respondToUser("todo read book", list);
         // spot-check phrasing and count
-        String expectedStart = "Got it. I've added this task:\n[T][ ] read book";
+        String expectedStart = "Easy. Dropped it in your list:\n[T][ ] read book";
         String expectedEnd = "\nNow you have 1 task in the list.";
         // tolerant check: startswith/endswith to avoid formatting brittleness
         assertEquals(true, msg.startsWith(expectedStart));
@@ -59,7 +59,7 @@ class ParserTest {
         assertEquals(true, unmarkMsg.contains("[T][ ] B"));
 
         String delMsg = Parser.respondToUser("delete 1", list);
-        assertEquals(true, delMsg.contains("Noted. I've removed this task:"));
+        assertEquals(true, delMsg.contains("Deleted — gone faster than a Sage wall"));
         assertEquals(1, list.size());
     }
 

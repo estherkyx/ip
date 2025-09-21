@@ -31,6 +31,26 @@ public class Main extends Application {
             AnchorPane ap = fxmlLoader.load();
             Scene scene = new Scene(ap);
             stage.setScene(scene);
+
+            double aspectW = 16;
+            double aspectH = 9;
+            stage.setWidth(800);
+            stage.setHeight(450);
+            stage.widthProperty().addListener((obs, oldW, newW) -> {
+                double newH = newW.doubleValue() * aspectH / aspectW;
+                if (Math.abs(stage.getHeight() - newH) > 1) { // avoid infinite loop
+                    stage.setHeight(newH);
+                }
+            });
+
+            stage.heightProperty().addListener((obs, oldH, newH) -> {
+                double newW = newH.doubleValue() * aspectW / aspectH;
+                if (Math.abs(stage.getWidth() - newW) > 1) {
+                    stage.setWidth(newW);
+                }
+            });
+
+            stage.setTitle("Jett");
             fxmlLoader.<MainWindow>getController().setJett(jett); // inject the Jett instance
             stage.show();
         } catch (IOException e) {

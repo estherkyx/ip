@@ -80,13 +80,13 @@ public final class Parser {
         case MARK: { // "mark <n>"
             Task markedTask = list.get(getTaskNumber(input, "mark", list) - 1);
             markedTask.mark();
-            return "Nice! I've marked this task as done:\n" + markedTask;
+            return "Marked. Clean finish:\n" + markedTask;
         }
 
         case UNMARK: { // "unmark <n>"
             Task unmarkedTask = list.get(getTaskNumber(input, "unmark", list) - 1);
             unmarkedTask.unmark();
-            return "OK, I've marked this task as not done yet:\n" + unmarkedTask;
+            return "Reset. Try again when you’re ready:\n" + unmarkedTask;
         }
 
         case DELETE: { // "delete <n>"
@@ -94,9 +94,10 @@ public final class Parser {
             int taskNumber = getTaskNumber(input, "delete", list);
             Task removedTask = list.remove(taskNumber - 1);
             assert list.size() == sizeBeforeDelete - 1 : "size must decrease by 1 after deleting a task";
-            return "Noted. I've removed this task:\n"
+            return "Deleted — gone faster than a Sage wall:\n"
                     + removedTask
                     + "\nNow you have " + list.size() + (list.size() == 1 ? " task" : " tasks") + " in the list.";
+
         }
 
         case TODO: { // "todo <desc>"
@@ -111,7 +112,7 @@ public final class Parser {
             Task todoTask = new Todo(todoDesc);
             list.add(todoTask);
             assert list.size() == sizeBeforeTodo + 1 : "size must increase by 1 after adding a task";
-            return "Got it. I've added this task:\n"
+            return "Easy. Dropped it in your list:\n"
                     + todoTask
                     + "\nNow you have " + list.size() + (list.size() == 1 ? " task" : " tasks") + " in the list.";
         }
@@ -142,7 +143,7 @@ public final class Parser {
             }
             assert list.size() == sizeBeforeDeadline + 1 : "size must increase by 1 after adding a task";
             Task last = list.get(list.size() - 1);
-            return "Got it. I've added this task:\n"
+            return "Pinned your deadline:\n"
                     + last
                     + "\nNow you have " + list.size() + (list.size() == 1 ? " task" : " tasks") + " in the list.";
         }
@@ -178,7 +179,7 @@ public final class Parser {
             }
             assert list.size() == sizeBeforeEvent + 1 : "size must increase by 1 after add";
             Task last = list.get(list.size() - 1);
-            return "Got it. I've added this task:\n"
+            return "Locked the event. Don’t be late:\n"
                     + last
                     + "\nNow you have " + list.size() + (list.size() == 1 ? " task" : " tasks") + " in the list.";
         }
@@ -195,12 +196,12 @@ public final class Parser {
         }
 
         case BYE:
-            return "Bye. Hope to see you again soon!";
+            return "I’m out. Keep your crosshair steady.";
 
         case INVALID:
         default:
             throw new JettException("""
-                    This is not a valid command. Use one of the following:
+                    That command whiffed. Try one of these:
                     1. list /<filter> (alphabetical / date / type)
                     2. todo <description>
                     3. deadline <description> /by <date>

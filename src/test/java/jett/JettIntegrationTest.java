@@ -12,11 +12,11 @@ public class JettIntegrationTest {
 
         // Greet
         String greet = jett.getGreeting();
-        assertTrue(greet.contains("Hello! I'm Jett"));
+        assertTrue(greet.contains("Hey, I’m Jett"));
 
         // Add todo
         String add = jett.getResponse("todo read book");
-        assertTrue(add.contains("Got it. I've added this task:"));
+        assertTrue(add.contains("Easy. Dropped it in your list:"));
 
         // Mark
         String mark = jett.getResponse("mark 1");
@@ -24,6 +24,6 @@ public class JettIntegrationTest {
 
         // Bye
         String bye = jett.getResponse("bye");
-        assertTrue(bye.contains("Bye. Hope to see you again soon!"));
+        assertTrue(bye.contains("I’m out. Keep your crosshair steady."));
     }
 }

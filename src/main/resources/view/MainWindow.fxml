@@ -7,12 +7,15 @@
 <?import javafx.scene.layout.HBox?>
 <?import javafx.scene.layout.VBox?>
 
-<AnchorPane xmlns="http://javafx.com/javafx/17"
-            xmlns:fx="http://javafx.com/fxml/1"
-            fx:controller="jett.MainWindow"
-            prefWidth="400.0" prefHeight="600.0"
-            stylesheets="@styles.css">
-
+<AnchorPane
+        xmlns="http://javafx.com/javafx/17"
+        xmlns:fx="http://javafx.com/fxml/1"
+        fx:controller="jett.MainWindow"
+        stylesheets="@styles.css"
+        style="-fx-background-image: url('/images/background.jpg');
+           -fx-background-repeat: no-repeat;
+           -fx-background-position: center center;
+           -fx-background-size: cover;">
 
     <children>
 
@@ -23,13 +26,12 @@
                     AnchorPane.topAnchor="0.0"
                     AnchorPane.leftAnchor="0.0"
                     AnchorPane.rightAnchor="0.0"
-                    AnchorPane.bottomAnchor="52.0">
+                    AnchorPane.bottomAnchor="52.0"
+                    style="-fx-background-color: transparent; -fx-background: transparent;">
             <content>
-                <!-- Dialog container: compact spacing & padding for readability -->
                 <VBox fx:id="dialogContainer"
                       spacing="8.0"
-                      style="-fx-padding: 10;">
-                </VBox>
+                      style="-fx-background-color: transparent; -fx-background: transparent; -fx-padding: 10;" />
             </content>
         </ScrollPane>
 
@@ -49,7 +51,7 @@
                         text="Send"
                         defaultButton="true"
                         onAction="#handleUserInput"
-                        style="-fx-font-size: 11pt; -fx-pref-height: 40px; -fx-pref-width: 90px;"/>
+                        style="-fx-font-size: 11pt; -fx-pref-height: 35px; -fx-pref-width: 90px;"/>
             </children>
         </HBox>
 

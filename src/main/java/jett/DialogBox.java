@@ -44,10 +44,10 @@ public class DialogBox extends HBox {
 
         // Space-efficient avatar + circular crop
         displayPicture.setImage(img);
-        displayPicture.setFitWidth(60);
-        displayPicture.setFitHeight(60);
+        displayPicture.setFitWidth(50);
+        displayPicture.setFitHeight(50);
         displayPicture.setPreserveRatio(true);
-        displayPicture.setClip(new Circle(30, 30, 30));
+        displayPicture.setClip(new Circle(25, 25, 25));
 
         // Base dialog style hook (CSS: .dialog)
         getStyleClass().add("dialog");

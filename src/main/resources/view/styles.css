@@ -1,38 +1,93 @@
-/* Base dialog container */
-.dialog {
-    -fx-padding: 0 8 0 8;
+/* -------- Base / Background -------- */
+.root {
+    -fx-font-family: "Segoe UI", "Roboto", "Helvetica", Arial, sans-serif;
+    -fx-background-color: #1c1c1c;
+    -fx-text-fill: #e6e6e6;
 }
 
-/* Bubble baseline */
-.bubble {
+/* Make the scroll area fully transparent so root background shows through */
+.scroll-pane,
+.scroll-pane > .viewport,
+#dialogContainer {
+    -fx-background-color: transparent;
+    -fx-background: transparent;
+}
+
+.dialog-bot .bubble, .dialog-user .bubble {
     -fx-background-radius: 12;
     -fx-padding: 8 12 8 12;
     -fx-font-size: 11pt;
-    -fx-line-spacing: 2px;
 }
 
-/* User bubble: right side, light blue */
+/* -------- Dialogs & Bubbles -------- */
+.dialog { -fx-padding: 0 8 0 8; }
+
+.bubble {
+    -fx-background-radius: 10;
+    -fx-padding: 8 12 8 12;
+    -fx-font-size: 11pt;
+    -fx-line-spacing: 1.5px;
+}
+
+/* User — cyan/blue */
 .dialog-user .bubble {
-    -fx-background-color: #e7f0ff;
+    -fx-background-color: #d0ebff;
     -fx-text-fill: #0b2a4a;
 }
 
-/* Bot bubble: left side, neutral grey */
+/* Jett — white/gray on dark */
 .dialog-bot .bubble {
-    -fx-background-color: #f2f3f5;
-    -fx-text-fill: #202020;
+    -fx-background-color: #f5f7fa;
+    -fx-text-fill: #1f252d;
 }
 
-/* Error bubble: left side, red-accented */
+/* Error — red accent */
 .dialog-error .bubble {
-    -fx-background-color: #ffecec;
-    -fx-text-fill: #7a0000;
-    -fx-border-color: #ff5a5a;
+    -fx-background-color: #ffe9ec;
+    -fx-text-fill: #7a000a;
+    -fx-border-color: #ff4655;
     -fx-border-width: 0 0 0 4;
-    -fx-border-radius: 10;
-    -fx-padding: 8 12 8 10; /* space for the red stripe */
+    -fx-border-radius: 8;
+    -fx-padding: 8 12 8 10;
 }
 
-/* Keep scroll pane background transparent */
-.scroll-pane > .viewport { -fx-background-color: transparent; }
-.scroll-pane              { -fx-background-color: transparent; }
+/* -------- Input Bar -------- */
+.text-field {
+    -fx-background-radius: 6;
+    -fx-background-color: #2a2a2a;
+    -fx-text-fill: #e8e8e8;
+    -fx-prompt-text-fill: #9aa0a6;
+    -fx-highlight-fill: #8ab4f8;
+    -fx-highlight-text-fill: black;
+    -fx-font-size: 13pt;
+    -fx-padding: 8 10 8 10;
+    -fx-border-color: transparent;
+}
+
+.text-field:focused {
+    -fx-effect: dropshadow(gaussian, rgba(138,180,248,0.25), 10, 0.3, 0, 0);
+    -fx-background-color: #2f2f2f;
+}
+
+/* Send button: cyan hover */
+#sendButton {
+    -fx-background-radius: 6;
+    -fx-font-size: 13pt;
+    -fx-padding: 8 16 8 16;
+    -fx-background-color: #2d9cff;
+    -fx-text-fill: white;
+    -fx-cursor: hand;
+    -fx-border-color: transparent;
+}
+
+#sendButton:hover    { -fx-background-color: #1f7ed6; }
+#sendButton:pressed  { -fx-background-color: #1662a7; }
+
+/* -------- Scrollbar (subtle) -------- */
+.scroll-bar:vertical .thumb {
+    -fx-background-color: rgba(255,255,255,0.25);
+    -fx-background-radius: 4;
+}
+.scroll-bar:vertical .track {
+    -fx-background-color: transparent;
+}

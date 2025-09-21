@@ -43,7 +43,9 @@ public class MainWindow extends AnchorPane {
         dialogContainer.setFillWidth(true);
 
         // Auto-scroll to bottom on new messages
-        dialogContainer.heightProperty().addListener((obs, oldVal, newVal) -> scrollPane.setVvalue(1.0));
+        dialogContainer.heightProperty().addListener((
+                obs, oldVal, newVal) -> scrollPane.setVvalue(1.0)
+        );
     }
 
     /**
