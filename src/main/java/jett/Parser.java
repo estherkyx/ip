@@ -1,32 +1,38 @@
 package jett;
 
+import java.util.Objects;
+
 /**
  * Parses and executes user commands for the Jett application.
  * Exposes a single entry point to handle a line of user input
  * and mutate the provided {@link TaskList} accordingly.
  */
-public class Parser {
+public final class Parser {
+
+    private Parser() {
+    }
 
     // Enums
     enum Command {
         LIST, MARK, UNMARK, DELETE, TODO, DEADLINE, EVENT, FIND, INVALID, BYE;
 
         static Command from(String input) {
-            // Isolate the command
-            assert input != null : "from(): input must not be null";
+            Objects.requireNonNull(input, "input");
             String cmd = input.trim().split("\\s+", 2)[0].toLowerCase();
-            assert !cmd.isEmpty() : "from(): command keyword must not be empty";
+            if (cmd.isEmpty()) {
+                return INVALID;
+            }
             return switch (cmd) {
-            case "list" -> LIST;
-            case "mark" -> MARK;
-            case "unmark" -> UNMARK;
-            case "delete" -> DELETE;
-            case "todo" -> TODO;
-            case "deadline" -> DEADLINE;
-            case "event" -> EVENT;
-            case "find" -> FIND;
-            case "bye" -> BYE;
-            default -> INVALID;
+                case "list" -> LIST;
+                case "mark" -> MARK;
+                case "unmark" -> UNMARK;
+                case "delete" -> DELETE;
+                case "todo" -> TODO;
+                case "deadline" -> DEADLINE;
+                case "event" -> EVENT;
+                case "find" -> FIND;
+                case "bye" -> BYE;
+                default -> INVALID;
             };
         }
     }
@@ -42,19 +48,21 @@ public class Parser {
      *                       or contains an invalid command
      */
     public static String respondToUser(String userInput, TaskList list) throws JettException {
-        assert list != null : "list must not be null";
+        Objects.requireNonNull(list, "list");
+        Objects.requireNonNull(userInput, "userInput");
+
+        final String input = userInput.trim();
 
         // Blank user input
-        if (userInput.isBlank()) {
+        if (input.isBlank()) {
             throw new JettException("What can I do for you?");
         }
 
-        Command cmd = Command.from(userInput);
-        assert cmd != null : "Command.from must not return null";
+        Command cmd = Command.from(input);
 
         switch (cmd) {
-        case LIST: // User input = "list"
-            String rest = userInput.substring(4).trim();
+        case LIST: { // "list" or "list /alphabetical" | "/date" | "/type"
+            String rest = input.length() >= 4 ? input.substring(4).trim() : "";
             if (rest.isEmpty()) {
                 return list.listString();
             } else if (rest.equalsIgnoreCase("/alphabetical")) {
@@ -67,52 +75,54 @@ public class Parser {
                 throw new JettException(
                         "Unknown modifier for 'list'. Use 'list', 'list /alphabetical', 'list /date' or 'list /type'.");
             }
+        }
 
-        case MARK: // User input = "mark"
-            Task markedTask = list.get(getTaskNumber(userInput, "mark", list) - 1);
-            assert markedTask != null : "marked task should exist";
+        case MARK: { // "mark <n>"
+            Task markedTask = list.get(getTaskNumber(input, "mark", list) - 1);
             markedTask.mark();
             return "Nice! I've marked this task as done:\n" + markedTask;
+        }
 
-        case UNMARK: // User input = "unmark"
-            Task unmarkedTask = list.get(getTaskNumber(userInput, "unmark", list) - 1);
-            assert unmarkedTask != null : "unmarked task should exist";
+        case UNMARK: { // "unmark <n>"
+            Task unmarkedTask = list.get(getTaskNumber(input, "unmark", list) - 1);
             unmarkedTask.unmark();
             return "OK, I've marked this task as not done yet:\n" + unmarkedTask;
+        }
 
-        case DELETE: // User input = "delete"
+        case DELETE: { // "delete <n>"
             int sizeBeforeDelete = list.size();
-            int taskNumber = getTaskNumber(userInput, "delete", list);
+            int taskNumber = getTaskNumber(input, "delete", list);
             Task removedTask = list.remove(taskNumber - 1);
             assert list.size() == sizeBeforeDelete - 1 : "size must decrease by 1 after deleting a task";
             return "Noted. I've removed this task:\n"
                     + removedTask
                     + "\nNow you have " + list.size() + (list.size() == 1 ? " task" : " tasks") + " in the list.";
+        }
 
-        case TODO: // User input = "todo"
-            if (userInput.length() < 5) {
+        case TODO: { // "todo <desc>"
+            if (input.length() < 5) {
                 throw new JettException("Fill in the description of your todo (e.g. todo read book)");
             }
-            String todoDesc = userInput.substring(5); // remove "todo "
+            String todoDesc = input.substring(5).trim();
             if (todoDesc.isEmpty()) {
                 throw new JettException("Fill in the description of your todo (e.g. todo read book)");
             }
             int sizeBeforeTodo = list.size();
             Task todoTask = new Todo(todoDesc);
-            assert todoTask != null : "new Todo must not be null";
             list.add(todoTask);
             assert list.size() == sizeBeforeTodo + 1 : "size must increase by 1 after adding a task";
             return "Got it. I've added this task:\n"
                     + todoTask
                     + "\nNow you have " + list.size() + (list.size() == 1 ? " task" : " tasks") + " in the list.";
+        }
 
-        case DEADLINE: // User input = "deadline"
-            if (userInput.length() < 9) {
+        case DEADLINE: { // "deadline <desc> /by <date>"
+            if (input.length() < 9) {
                 throw new JettException(
                         "Fill in the description of your deadline (e.g. deadline complete report /by Sep 6 2025)"
                 );
             }
-            String[] parsed = userInput.substring(9).split("/by"); // remove "deadline " and parse
+            String[] parsed = input.substring(9).split("/by\\s+", 2); // allow flexible whitespace after /by
             if (parsed.length < 2) {
                 throw new JettException("Missing '/by'. (e.g. deadline complete report /by Sep 6 2025)");
             }
@@ -126,29 +136,29 @@ public class Parser {
             int sizeBeforeDeadline = list.size();
             try {
                 Task deadlineTask = new Deadline(deadlineDesc, by);
-                assert deadlineTask != null : "new Deadline must not be null";
                 list.add(deadlineTask);
             } catch (IllegalArgumentException e) {
                 throw new JettException("Use valid date format, e.g. 2025-09-06, 6/9/2025, Sep 6 2025");
             }
             assert list.size() == sizeBeforeDeadline + 1 : "size must increase by 1 after adding a task";
-            assert list.get(list.size() - 1) != null : "last added task must not be null";
+            Task last = list.get(list.size() - 1);
             return "Got it. I've added this task:\n"
-                    + list.get(list.size() - 1)
+                    + last
                     + "\nNow you have " + list.size() + (list.size() == 1 ? " task" : " tasks") + " in the list.";
+        }
 
-        case EVENT: // User input = "event"
-            if (userInput.length() < 6) {
+        case EVENT: { // "event <desc> /from <start> /to <end>"
+            if (input.length() < 6) {
                 throw new JettException(
                         "Fill in the description of your event (e.g. event camp /from Sep 6 2025 /to Sep 7 2025)"
                 );
             }
-            String[] parsedFrom = userInput.substring(6).split("/from "); // remove "event " and parse
+            String[] parsedFrom = input.substring(6).split("/from\\s+", 2); // allow flexible whitespace
             if (parsedFrom.length < 2) {
                 throw new JettException("Missing '/from'. (e.g. event camp /from Sep 6 2025 /to Sep 7 2025)");
             }
             String eventDesc = parsedFrom[0].trim();
-            String[] parsedTo = parsedFrom[1].trim().split("/to "); // parse according to "/to "
+            String[] parsedTo = parsedFrom[1].trim().split("/to\\s+", 2); // allow flexible whitespace
             if (parsedTo.length < 2) {
                 throw new JettException("Missing '/to'. (e.g. event camp /from Sep 6 2025 /to Sep 7 2025)");
             }
@@ -162,35 +172,32 @@ public class Parser {
             int sizeBeforeEvent = list.size();
             try {
                 Task newTask = new Event(eventDesc, from, to);
-                assert newTask != null : "new Event must not be null";
                 list.add(newTask);
             } catch (IllegalArgumentException e) {
                 throw new JettException("Use valid date format, e.g. 2025-09-06, 6/9/2025, Sep 6 2025");
             }
             assert list.size() == sizeBeforeEvent + 1 : "size must increase by 1 after add";
-            assert list.get(list.size() - 1) != null : "last added task must not be null";
+            Task last = list.get(list.size() - 1);
             return "Got it. I've added this task:\n"
-                    + list.get(list.size() - 1)
+                    + last
                     + "\nNow you have " + list.size() + (list.size() == 1 ? " task" : " tasks") + " in the list.";
+        }
 
         case FIND: {
-            if (userInput.length() < 5) {
+            if (input.length() < 5) {
                 throw new JettException("Provide a keyword (e.g. find book)");
             }
-            String keyword = userInput.substring(5).trim();
+            String keyword = input.substring(5).trim();
             if (keyword.isEmpty()) {
                 throw new JettException("Provide a keyword (e.g. find book)");
             }
             return list.findString(keyword);
         }
 
-        case BYE: {
+        case BYE:
             return "Bye. Hope to see you again soon!";
-        }
 
         case INVALID:
-            // Fallthrough
-
         default:
             throw new JettException("""
                     This is not a valid command. Use one of the following:
@@ -207,19 +214,19 @@ public class Parser {
     }
 
     private static int getTaskNumber(String userInput, String action, TaskList list) throws JettException {
-        String[] parts = userInput.split(" "); // parse according to space
-        if (parts.length != 2) {
+        // accept extra spaces and ignore trailing tokens
+        String[] parts = userInput.trim().split("\\s+", 3);
+        if (parts.length < 2) {
             throw new JettException("Specify a task number (e.g. " + action + " 2)");
         }
         String number = parts[1];
-        if (!number.matches("\\d+") || number.matches("0+")) { // check if number is an int > 0
+        if (!number.matches("\\d+") || number.matches("0+")) { // must be positive integer
             throw new JettException("Key in a valid task number (e.g. " + action + " 2)");
-        } else {
-            int taskNumber = Integer.parseInt(number); // convert string to int
-            if (taskNumber < 1 || taskNumber > list.size()) {
-                throw new JettException("I can't find task " + taskNumber + ". Use 'list' to see valid task numbers.");
-            }
-            return taskNumber;
         }
+        int taskNumber = Integer.parseInt(number);
+        if (taskNumber < 1 || taskNumber > list.size()) {
+            throw new JettException("I can't find task " + taskNumber + ". Use 'list' to see valid task numbers.");
+        }
+        return taskNumber;
     }
 }

@@ -4,6 +4,7 @@ import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.Comparator;
 import java.util.Locale;
+import java.util.Objects;
 
 /**
  * Represents a collection of {@link Task} objects in the Jett application.
@@ -11,46 +12,26 @@ import java.util.Locale;
  */
 public class TaskList {
 
-    private static final Comparator<Task> alphabeticalOrder = (a, b) -> {
-        return a.getDescription().toLowerCase(Locale.ROOT)
-                .compareTo(b.getDescription().toLowerCase(Locale.ROOT));
-    };
+    private static final Comparator<Task> alphabeticalOrder =
+            Comparator.comparing(t -> t.getDescription().toLowerCase(Locale.ROOT));
 
-    private static final Comparator<Task> dateOrder = (a, b) -> {
-        boolean aTodo = (a.kind() == Task.TaskKind.TODO);
-        boolean bTodo = (b.kind() == Task.TaskKind.TODO);
-
-        // Place todos at the top
-        if (aTodo && !bTodo) {
-            return -1;
-        } else if (!aTodo && bTodo) {
-            return 1;
-        }
-
-        // If both tasks are todo, sort by description (alphabetically)
-        if (aTodo && bTodo) {
-            return alphabeticalOrder.compare(a, b);
-        }
-
-        // If dates are different, sort by earliest date
-        LocalDate aDate = a.sortDate();
-        LocalDate bDate = b.sortDate();
-        if (!aDate.isEqual(bDate)) {
-            return aDate.compareTo(bDate);
-        }
-
-        // If both tasks have the same date and are of a different kind, sort by Deadline, then Event
-        if (a.kind() != b.kind()) {
-            if (a.kind() == Task.TaskKind.DEADLINE && b.kind() == Task.TaskKind.EVENT) {
-                return -1;
-            } else {
-                return 1;
-            }
-        }
-
-        // If both tasks have the same date and are of the same kind, sort by description (alphabetically)
-        return alphabeticalOrder.compare(a, b);
-    };
+    /**
+     * Date-ordered view with rules:
+     * 1) Todos appear before non-Todos.
+     * 2) Among dated tasks, earlier dates come first (missing -> LocalDate.MAX).
+     * 3) If same date and kinds differ, DEADLINE precedes EVENT.
+     * 4) If same date and kind, alphabetical.
+     */
+    private static final Comparator<Task> dateOrder =
+            Comparator
+                    // 1) TODOs first
+                    .comparingInt((Task t) -> t.kind() == Task.TaskKind.TODO ? 0 : 1)
+                    // 2) by date value; Todos have no date -> MAX, so they won't reorder among themselves here
+                    .thenComparing(t -> t.sortDate().orElse(LocalDate.MAX))
+                    // 3) DEADLINE before EVENT when dates tie (enum order: TODO, DEADLINE, EVENT)
+                    .thenComparingInt(t -> t.kind().ordinal())
+                    // 4) alphabetical as final tie-break
+                    .thenComparing(alphabeticalOrder);
 
     private static final Comparator<Task> typeOrder =
             Comparator.<Task>comparingInt(t -> rank(t.kind()))
@@ -76,9 +57,9 @@ public class TaskList {
 
     private static int rank(Task.TaskKind k) {
         return switch (k) {
-        case TODO -> 0;
-        case DEADLINE -> 1;
-        case EVENT -> 2;
+            case TODO -> 0;
+            case DEADLINE -> 1;
+            case EVENT -> 2;
         };
     }
 
@@ -167,7 +148,7 @@ public class TaskList {
         int count = 0;
 
         for (Task t : tasks) {
-            if (t.getDescription().toLowerCase().contains(keyword)) {
+            if (t.getDescription().toLowerCase(Locale.ROOT).contains(keyword)) {
                 if (count == 0) {
                     sb.append("Here are the matching tasks in your list:\n");
                 }
@@ -197,6 +178,8 @@ public class TaskList {
      * @throws NullPointerException if {@code order} or {@code header} is {@code null}
      */
     public String sortedList(Comparator<Task> order, String header) {
+        Objects.requireNonNull(order, "order");
+        Objects.requireNonNull(header, "header");
         if (tasks.isEmpty()) {
             return "Your list is empty.";
         }
@@ -205,8 +188,8 @@ public class TaskList {
 
         StringBuilder sb = new StringBuilder();
         sb.append(header);
-        for (int i = 0; i < view.size(); i++) {
-            sb.append("\n").append("- ").append(view.get(i).toString());
+        for (Task t : view) {
+            sb.append("\n- ").append(t.toString());
         }
         return sb.toString();
     }

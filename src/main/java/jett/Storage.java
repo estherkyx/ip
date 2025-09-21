@@ -71,10 +71,8 @@ public class Storage {
             return list;
         }
 
-        Scanner scanner = null;
-        try {
-            scanner = new Scanner(f);
-            while (scanner.hasNext()) {
+        try (Scanner scanner = new Scanner(f)) {
+            while (scanner.hasNextLine()) {
                 String line = scanner.nextLine().trim();
                 if (line.isEmpty()) {
                     continue;
@@ -88,11 +86,8 @@ public class Storage {
             System.out.println("File not found");
         } catch (Exception e) {
             System.out.println("Could not load data");
-        } finally {
-            if (scanner != null) {
-                scanner.close();
-            }
         }
+
         assert list != null : "getData must not return null";
         return list;
     }
@@ -107,29 +102,37 @@ public class Storage {
     protected static Task parseLine(String line) {
         assert line != null : "parseLine: input must not be null";
 
-        // Corrupted data (not in expected format)
-        if (line == null || line.length() < 6 || line.charAt(0) != '[') {
+        // Basic shape check: "[T][ ] ..." / "[D][X] ..." / "[E][ ] ..."
+        if (line.length() < 6 || line.charAt(0) != '[') {
             return null;
         }
 
-        // Locate the second close brackets
         int firstClose = line.indexOf(']');
-        if (firstClose == -1) {
+        if (firstClose != 2) { // expect "[T]" -> close at index 2
             return null;
         }
-        int secondClose = line.indexOf(']', firstClose + 1);
-        if (secondClose == -1) {
+        char taskType = line.charAt(1); // 'T', 'D', or 'E'
+
+        int statusOpen = firstClose + 1;
+        if (statusOpen >= line.length() || line.charAt(statusOpen) != '[') {
             return null;
         }
+        int statusClose = line.indexOf(']', statusOpen + 1);
+        if (statusClose == -1) {
+            return null;
+        }
+        // status pattern should be like "[X]" or "[ ]"
+        if (statusClose != statusOpen + 2) {
+            return null;
+        }
+        char statusChar = line.charAt(statusOpen + 1);
+        boolean isMarked = (statusChar == 'X');
 
-        char taskType = line.charAt(1); // T or D or E
-        boolean isMarked = line.substring(0, secondClose + 1).contains("[X]");
-
-        // Obtain the task description and timings (if any)
+        int secondClose = statusClose;
         String rest = line.substring(secondClose + 1).trim();
         assert !rest.startsWith("]") : "Text content should follow status brackets";
 
-        Task t = null;
+        Task t;
         switch (taskType) {
         case 'T': {
             t = new Todo(rest);
@@ -140,7 +143,6 @@ public class Storage {
             if (deadlineParts == null) {
                 return null;
             }
-
             String deadlineDesc = deadlineParts[0];
             String datesInParentheses = deadlineParts[1];
 
@@ -160,11 +162,9 @@ public class Storage {
         }
         case 'E': {
             String[] eventParts = extractDescAndDates(rest);
-
             if (eventParts == null) {
                 return null;
             }
-
             String eventDesc = eventParts[0];
             String datesInParentheses = eventParts[1];
 

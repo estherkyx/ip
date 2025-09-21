@@ -1,9 +1,11 @@
 package jett;
 
+import java.util.Objects;
+
 /**
  * Handles all user-facing messages for the Jett application.
  * The {@code Ui} class is responsible for providing greetings,
- * exit messages and error messages.
+ * exit messages, and error messages.
  */
 public class Ui {
 
@@ -13,7 +15,7 @@ public class Ui {
      * @return the string for the greeting message
      */
     public String getGreeting() {
-        return "Hello! I'm Jett.\n" + "What can I do for you?";
+        return "Hello! I'm Jett.\nWhat can I do for you?";
     }
 
     /**
@@ -28,11 +30,10 @@ public class Ui {
     /**
      * Provides an error message meant for the user.
      *
-     * @param msg the error message to display
-     *
+     * @param msg the error message to display (must not be null)
      * @return the string for the error message
      */
     public String getError(String msg) {
-        return msg;
+        return Objects.requireNonNull(msg, "msg");
     }
 }

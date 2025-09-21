@@ -1,5 +1,8 @@
 package jett;
 
+import java.util.Optional;
+import java.time.LocalDate;
+
 /**
  * Represents a simple to-do task in the Jett application.
  * A {@code Todo} is a type of {@link Task} that has only a description,
@@ -27,8 +30,17 @@ public class Todo extends Task {
     }
 
     /**
+     * {@inheritDoc}
+     * For todos, this is always empty because they have no date.
+     */
+    @Override
+    public Optional<LocalDate> sortDate() {
+        return Optional.empty();
+    }
+
+    /**
      * Returns a string representation of this to-do task.
-     * The format includes the task type, status and description
+     * The format includes the task type, status, and description.
      *
      * @return formatted string representation of the to-do
      */
