@@ -12,7 +12,7 @@
         xmlns:fx="http://javafx.com/fxml/1"
         fx:controller="jett.MainWindow"
         stylesheets="@styles.css"
-        style="-fx-background-image: url('/images/background.jpg');
+        style="-fx-background-image: url('/images/Background.jpg');
            -fx-background-repeat: no-repeat;
            -fx-background-position: center center;
            -fx-background-size: cover;">
