@@ -12,6 +12,9 @@ import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.io.TempDir;
 
 public class StorageTest {
+    @TempDir
+    Path tmp;
+
     @Test
     public void parseLine_validTaskString_success() {
         // Valid Todo Task
@@ -85,9 +88,6 @@ public class StorageTest {
         Task parsedE = Storage.parseLine("[E][ ] camp (night) (from: Sep 13 2025 to: Sep 14 2025)");
         assertEquals("[E][ ] camp (night) (from: Sep 13 2025 to: Sep 14 2025)", parsedE.toString());
     }
-
-    @TempDir
-    Path tmp;
 
     @Test
     public void saveAndLoad_roundTrip_preservesTasks() throws Exception {

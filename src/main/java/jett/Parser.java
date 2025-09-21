@@ -23,16 +23,16 @@ public final class Parser {
                 return INVALID;
             }
             return switch (cmd) {
-                case "list" -> LIST;
-                case "mark" -> MARK;
-                case "unmark" -> UNMARK;
-                case "delete" -> DELETE;
-                case "todo" -> TODO;
-                case "deadline" -> DEADLINE;
-                case "event" -> EVENT;
-                case "find" -> FIND;
-                case "bye" -> BYE;
-                default -> INVALID;
+            case "list" -> LIST;
+            case "mark" -> MARK;
+            case "unmark" -> UNMARK;
+            case "delete" -> DELETE;
+            case "todo" -> TODO;
+            case "deadline" -> DEADLINE;
+            case "event" -> EVENT;
+            case "find" -> FIND;
+            case "bye" -> BYE;
+            default -> INVALID;
             };
         }
     }

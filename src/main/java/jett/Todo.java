@@ -1,7 +1,7 @@
 package jett;
 
-import java.util.Optional;
 import java.time.LocalDate;
+import java.util.Optional;
 
 /**
  * Represents a simple to-do task in the Jett application.

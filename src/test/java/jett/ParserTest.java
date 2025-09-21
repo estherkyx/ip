@@ -34,7 +34,7 @@ class ParserTest {
     }
 
     @Test
-    void deadline_and_event_parsing_withFlexibleWhitespace() throws Exception {
+    void deadlineEvent_parsingWithFlexibleWhitespace() throws Exception {
         Parser.respondToUser("deadline submit report   /by    Sep 6 2025", list);
         Parser.respondToUser("event camp /from   2025-09-06    /to   2025-09-07", list);
         assertEquals(2, list.size());
@@ -47,7 +47,7 @@ class ParserTest {
     }
 
     @Test
-    void mark_unmark_delete_byIndex_flow() throws Exception {
+    void markUnmark_deleteByIndex() throws Exception {
         Parser.respondToUser("todo A", list);
         Parser.respondToUser("todo B", list);
         assertEquals(2, list.size());
@@ -75,7 +75,7 @@ class ParserTest {
     }
 
     @Test
-    void invalid_and_blank_inputs_throw() {
+    void invalidOrBlank_inputsThrow() {
         assertThrows(JettException.class, () -> Parser.respondToUser("   ", list));
         assertThrows(JettException.class, () -> Parser.respondToUser("nonsense", list));
     }

@@ -57,9 +57,9 @@ public class TaskList {
 
     private static int rank(Task.TaskKind k) {
         return switch (k) {
-            case TODO -> 0;
-            case DEADLINE -> 1;
-            case EVENT -> 2;
+        case TODO -> 0;
+        case DEADLINE -> 1;
+        case EVENT -> 2;
         };
     }
 
